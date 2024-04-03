@@ -1,0 +1,13 @@
+Package: dashDragGrid
+Title: Draggable Toolbox grid based on react grid
+Version: 0.9.4
+Description: Draggable Toolbox grid based on react grid
+Depends: R (>= 3.0.2)
+Imports: 
+Suggests: 
+License: MIT + file LICENSE
+URL: https://github.com/simon-u/dash-drag-grid
+BugReports: https://github.com/simon-u/dash-drag-grid/issues
+Encoding: UTF-8
+LazyData: true
+KeepSource: true
