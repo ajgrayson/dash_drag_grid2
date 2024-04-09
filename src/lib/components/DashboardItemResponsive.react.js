@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import {NROWS, NCOLS} from '../constants';
 
-import '../../../node_modules/react-grid-layout/css/styles.css';
-import '../../../node_modules/react-resizable/css/styles.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import './style.css';
 
 /**

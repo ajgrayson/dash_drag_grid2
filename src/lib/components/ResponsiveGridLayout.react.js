@@ -11,8 +11,8 @@ import {
 } from '../constants';
 
 import {saveToLs, getFromLs} from '../localStorage';
-import '../../../node_modules/react-grid-layout/css/styles.css';
-import '../../../node_modules/react-resizable/css/styles.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import './style.css';
 
 const ResponsiveReactGridLayout = widthProvider(Responsive);
@@ -54,8 +54,10 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
  * `Input("<my-id>", "layout")`.
  */
 export default class ResponsiveGridLayout extends Component {
+    
     componentDidUpdate() {
         let {children = []} = this.props;
+
         const {
             id,
             layouts: providedLayouts,
@@ -65,7 +67,9 @@ export default class ResponsiveGridLayout extends Component {
             breakpoints = BREAKPOINTS,
             gridCols = GRID_COLS_RESPONSIVE,
         } = this.props;
+
         const layouts = {};
+        
         let child_props, child_id, isDashboardItem;
 
         children = Array.isArray(children) ? children : [children];
@@ -73,7 +77,7 @@ export default class ResponsiveGridLayout extends Component {
         // Build layout
         //   Priority to client local store [except if specified]
         //   Then layout
-        //   And then DashboardItem [except if sepcified])
+        //   And then DashboardItem [except if specified])
         if (clearSavedLayout) {
             saveToLs(`${id}-layouts`, null);
         }
@@ -106,6 +110,7 @@ export default class ResponsiveGridLayout extends Component {
                         child_id = JSON.stringify(child_id);
                     }
                 }
+
                 // Define the layout for the specific item x breakpoint
                 if (savedLayout && savedLayout[bkp]) {
                     item_layout = savedLayout[bkp].find(
@@ -140,7 +145,6 @@ export default class ResponsiveGridLayout extends Component {
                         key,
                         ncols[bkp],
                         nrows,
-                        nrows,
                         gridCols[bkp]
                     );
                 }
@@ -150,7 +154,6 @@ export default class ResponsiveGridLayout extends Component {
                         child_id,
                         key,
                         ncols[bkp],
-                        nrows,
                         nrows,
                         gridCols[bkp]
                     );
@@ -173,10 +176,12 @@ export default class ResponsiveGridLayout extends Component {
         const l = getLayoutItem(layout, i);
         if (!l) return;
 
-        this.setState({
-            oldResizeItem: cloneLayoutItem(l),
-            oldLayout: this.state.layout,
-            resizing: true,
+        this.setState((prevState) => {
+            return {
+                oldResizeItem: cloneLayoutItem(l),
+                oldLayout: prevState.layout,
+                resizing: true,
+            }
         });
     };
 
