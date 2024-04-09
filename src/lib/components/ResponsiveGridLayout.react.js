@@ -69,9 +69,7 @@ export default class ResponsiveGridLayout extends Component {
         } = this.props;
 
         const layouts = {};
-
-        console.log('componentDidUpdate')
-
+        
         let child_props, child_id, isDashboardItem;
 
         children = Array.isArray(children) ? children : [children];
@@ -84,8 +82,6 @@ export default class ResponsiveGridLayout extends Component {
             saveToLs(`${id}-layouts`, null);
         }
         const savedLayout = getFromLs(`${id}-layouts`);
-
-        console.log('breakpoints', breakpoints)
 
         for (var bkp in breakpoints) {
             // eslint-disable-next-line no-loop-func
@@ -114,10 +110,6 @@ export default class ResponsiveGridLayout extends Component {
                         child_id = JSON.stringify(child_id);
                     }
                 }
-
-                console.log('child_props', child_props)
-                console.log('child_id', child_id)
-                console.log('isDashboardItem', isDashboardItem)
 
                 // Define the layout for the specific item x breakpoint
                 if (savedLayout && savedLayout[bkp]) {
