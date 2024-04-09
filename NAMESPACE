@@ -3,6 +3,6 @@
 export(DashboardItemResponsive)
 export(ResponsiveGridLayout)
 export(ToolBoxGrid)
+export(responsiveGridLayout)
 export(dashboardItemResponsive)
 export(toolBoxGrid)
-export(responsiveGridLayout)
