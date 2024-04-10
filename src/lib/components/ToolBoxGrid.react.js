@@ -20,6 +20,7 @@ import {Toolbox} from './Toolbox.react.js';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './style.css';
+import GridItem from './GridItem.react.js';
 
 /**
  * ToolBoxGrid is an addition to the ResponsiveGridLayout
@@ -87,8 +88,11 @@ export default class ToolBoxGrid extends Component {
             setProps: this.props.setProps,
             onDropHeight: this.props.onDropHeight,
             onDropWidth: this.props.onDropWidth,
-            classNames: {}
+            activeWindows: {}
         };
+
+        this.handleResizeStart = this.handleResizeStart.bind(this);
+        this.handleResizeStop = this.handleResizeStop.bind(this);
     }
 
     handleDrop = (layout, layoutItem, _event) => {
@@ -206,6 +210,22 @@ export default class ToolBoxGrid extends Component {
             };
         },
         () => {});
+    }
+
+    handleResizeStart(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = true;
+            return newState;
+        })
+    }
+
+    handleResizeStop(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = false;
+            return newState;
+        })
     }
 
     componentDidMount() {
@@ -342,22 +362,6 @@ export default class ToolBoxGrid extends Component {
         }));
     }
 
-    makeItemActive(key) {
-        this.setState(prev => {
-            let newState = {...prev};
-            newState.classNames[key] = 'active';
-            return newState;
-        })
-    }
-
-    makeItemInactive(key) {
-        this.setState(prev => {
-            let newState = {...prev};
-            newState.classNames[key] = '';
-            return newState;
-        })
-    }
-
     render() {
         let {children = []} = this.props;
         const {
@@ -398,6 +402,8 @@ export default class ToolBoxGrid extends Component {
                     rowHeight={height}
                     onDrop={this.handleDrop}
                     onLayoutChange={this.handleLayoutChange}
+                    onResizeStart={this.handleResizeStart}
+                    onResizeStop={this.handleResizeStop}
                     {...this.props}
                 >
                     {gridContent.map((child, key) => {
@@ -433,32 +439,13 @@ export default class ToolBoxGrid extends Component {
                         }
 
                         return (
-                            <div
+                            <GridItem
                                 key={_key}
-                                className={"item " + (this.state.classNames[_key] || "")}
+                                className={"item"}
                                 data-grid={_data_grid}
-                            >
-                                {
-                                    <div className="item-top-container">
-                                        <div className="item-top"
-                                            onMouseDown={() => this.makeItemActive(_key)}
-                                            onMouseUp={() => this.makeItemInactive(_key)}
-                                        >...</div>
-                                        <button
-                                            className="close-button"
-                                            onClick={() => this.onPutItem(_key)}
-                                        >
-                                            &times;
-                                        </button>
-                                    </div>
-                                }
-                                <div
-                                    className="item-content"
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                >
-                                    {child}
-                                </div>
-                            </div>
+                                onCloseClicked={() => this.onPutItem(_key)}
+                                active={this.state.activeWindows[_key] || false}
+                            >{child}</GridItem>
                         );
                     })}
                 </ResponsiveReactGridLayout>
