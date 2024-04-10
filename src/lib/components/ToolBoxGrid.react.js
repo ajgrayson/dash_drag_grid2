@@ -87,10 +87,11 @@ export default class ToolBoxGrid extends Component {
             setProps: this.props.setProps,
             onDropHeight: this.props.onDropHeight,
             onDropWidth: this.props.onDropWidth,
+            classNames: {}
         };
     }
 
-    onDrop = (layout, layoutItem, _event) => {
+    handleDrop = (layout, layoutItem, _event) => {
         _event.persist();
 
         this.setState((prevState) => {
@@ -146,7 +147,7 @@ export default class ToolBoxGrid extends Component {
 
     /* We need to caputre the changes in break point to find it for the right toolbox. it will enable us to store different 
     configurations for sizes */
-    onBreakpointChange = (breakpoint) => {
+    handleBreakpointChange = (breakpoint) => {
         this.setState((prevState) => {
             return {
                 currentBreakpoint: breakpoint,
@@ -161,7 +162,7 @@ export default class ToolBoxGrid extends Component {
         });
     };
 
-    onLayoutChange = (current_layout, all_layouts) => {
+    handleLayoutChange = (current_layout, all_layouts) => {
         // First we save the layout to the local storage
         if (this.state.save) {
             all_layouts = appendInToolboxFalse(all_layouts);
@@ -205,7 +206,7 @@ export default class ToolBoxGrid extends Component {
             };
         },
         () => {});
-    };
+    }
 
     componentDidMount() {
         let {children = []} = this.props;
@@ -229,7 +230,7 @@ export default class ToolBoxGrid extends Component {
         // Build layout on inital start
         //   Priority to client local store [except if specified]
         //   Then layout
-        //   And then DashboardItem [except if sepcified])
+        //   And then DashboardItem [except if specified])
         if (clearSavedLayout) {
             saveToLs(`${id}-layouts`, null);
         }
@@ -341,6 +342,22 @@ export default class ToolBoxGrid extends Component {
         }));
     }
 
+    makeItemActive(key) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.classNames[key] = 'active';
+            return newState;
+        })
+    }
+
+    makeItemInactive(key) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.classNames[key] = '';
+            return newState;
+        })
+    }
+
     render() {
         let {children = []} = this.props;
         const {
@@ -376,11 +393,11 @@ export default class ToolBoxGrid extends Component {
                     style={style}
                     layouts={this.state.layouts}
                     cols={gridCols}
-                    onBreakpointChange={this.onBreakpointChange}
+                    onBreakpointChange={this.handleBreakpointChange}
                     breakpoints={breakpoints}
                     rowHeight={height}
-                    onDrop={this.onDrop}
-                    onLayoutChange={this.onLayoutChange}
+                    onDrop={this.handleDrop}
+                    onLayoutChange={this.handleLayoutChange}
                     {...this.props}
                 >
                     {gridContent.map((child, key) => {
@@ -414,21 +431,22 @@ export default class ToolBoxGrid extends Component {
                         } else {
                             _key = key.toString();
                         }
+
                         return (
                             <div
                                 key={_key}
-                                className="item"
+                                className={"item " + (this.state.classNames[_key] || "")}
                                 data-grid={_data_grid}
                             >
                                 {
                                     <div className="item-top-container">
-                                        <span className="item-top">...</span>
+                                        <div className="item-top"
+                                            onMouseDown={() => this.makeItemActive(_key)}
+                                            onMouseUp={() => this.makeItemInactive(_key)}
+                                        >...</div>
                                         <button
                                             className="close-button"
-                                            onClick={this.onPutItem.bind(
-                                                this,
-                                                _key
-                                            )}
+                                            onClick={() => this.onPutItem(_key)}
                                         >
                                             &times;
                                         </button>
