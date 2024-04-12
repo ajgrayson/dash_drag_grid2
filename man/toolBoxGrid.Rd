@@ -19,7 +19,8 @@ isBounded=NULL, isDraggable=NULL, isDroppable=NULL,
 isResizable=NULL, layouts=NULL, margin=NULL, ncols=NULL,
 nrows=NULL, onDropHeight=NULL, onDropWidth=NULL,
 preventCollision=NULL, resizeHandles=NULL, save=NULL,
-style=NULL, toolbox=NULL, transformScale=NULL,
+style=NULL, toolbox=NULL, toolboxComponent=NULL,
+toolboxTitle=NULL, transformScale=NULL,
 useCSSTransforms=NULL, verticalCompact=NULL)
 }
 
@@ -31,7 +32,8 @@ By default all the items can be dragged and resized.}
 \item{id}{Character. (string) The ID used to identify this component in Dash callbacks.
 The id is also used to automatically save the layout on client side.}
 
-\item{autoSize}{Logical. }
+\item{autoSize}{Logical. (bool) Other props defined by react-grid-layout
+If true, the container height swells and contracts to fit contents}
 
 \item{breakpoints}{Named list. ({breakpoint: number}) The breakpoints for the responsive layout.
 For each screen size (breakpoint) we can define a different layout.
@@ -43,17 +45,21 @@ Default value is {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
 \item{clearSavedLayout}{Logical. (bool) If set to true, the position of elements saved on client side
 will be cleared on the next page load.}
 
-\item{compactType}{A value equal to: 'vertical', 'horizontal'. }
+\item{compactType}{A value equal to: 'vertical', 'horizontal'. Compaction type.}
 
-\item{containerPadding}{List of numerics | named list. }
+\item{containerPadding}{List of numerics | named list. Padding inside the container [x, y] in px}
 
 \item{currentBreakpoint}{Character. current breakpoint}
 
 \item{defaultInToolbox}{Logical. This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default}
 
-\item{draggableCancel}{Character. }
+\item{draggableCancel}{Character. (string) A CSS selector for tags that will not be draggable.
+or example: draggableCancel:'.MyNonDraggableAreaClassName'
+If you forget the leading . it will not work.}
 
-\item{draggableHandle}{Character. }
+\item{draggableHandle}{Character. A CSS selector for tags that will act as the draggable handle.
+For example: draggableHandle:'.MyDragHandleClassName'
+If you forget the leading . it will not work.}
 
 \item{gridCols}{Named list. ({breakpoint: number}) the number of columns in the grid layout.
 Default value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}.}
@@ -65,7 +71,17 @@ Default value is 30.}
 
 \item{isDraggable}{Logical. Are items draggable}
 
-\item{isDroppable}{Logical. }
+\item{isDroppable}{Logical. If true, droppable elements (with `draggable={true}` attribute)
+can be dropped on the grid. It triggers "onDrop" callback
+with position and event object as parameters.
+It can be useful for dropping an element in a specific position
+
+NOTE: In case of using Firefox you should add
+`onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
+along with `draggable={true}` otherwise this feature will work incorrect.
+onDragStart attribute is required for Firefox for a dragging initialization
+
+@see https://bugzilla.mozilla.org/show_bug.cgi?id=568313}
 
 \item{isResizable}{Logical. Are items resizable}
 
@@ -78,7 +94,7 @@ array objects like so:
 The ID used to identify this component in Dash callbacks.
 The id is also used to automatically save the layout on client side.}
 
-\item{margin}{List of numerics | named list. }
+\item{margin}{List of numerics | named list. Margin between items [x, y] in px.}
 
 \item{ncols}{Named list. ({breakpoint: number}) the default number of columns by item.
 Default value is {lg: 6, md: 5, sm: 3, xs: 4, xxs: 2}.}
@@ -90,9 +106,19 @@ Default value is 8.}
 
 \item{onDropWidth}{Numeric. Set the default height of items that are dropped from the toolbox into the grid. default is 4}
 
-\item{preventCollision}{Logical. }
+\item{preventCollision}{Logical. If true, grid items won't change position when being
+dragged over.}
 
-\item{resizeHandles}{List of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's. }
+\item{resizeHandles}{List of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's. Defines which resize handles should be rendered
+Allows for any combination of:
+'s' - South handle (bottom-center)
+'w' - West handle (left-center)
+'e' - East handle (right-center)
+'n' - North handle (top-center)
+'sw' - Southwest handle (bottom-left)
+'nw' - Northwest handle (top-left)
+'se' - Southeast handle (bottom-right)
+'ne' - Northeast handle (top-right)}
 
 \item{save}{Logical. (bool) If True, then the layout is automatically saved on client browser.
 Default value is True}
@@ -101,11 +127,17 @@ Default value is True}
 
 \item{toolbox}{Named list. The toolbox layout}
 
-\item{transformScale}{Numeric. }
+\item{toolboxComponent}{(React.Component) The custom component to render the toolbox item}
 
-\item{useCSSTransforms}{Logical. }
+\item{toolboxTitle}{Character. (string) The title above the toolbox.}
 
-\item{verticalCompact}{Logical. }
+\item{transformScale}{Numeric. If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
+we should set scale coefficient to avoid render artefacts while dragging.}
+
+\item{useCSSTransforms}{Logical. Uses CSS3 translate() instead of position top/left.
+This makes about 6x faster paint performance}
+
+\item{verticalCompact}{Logical. If true, the layout will compact vertically}
 }
 
 \value{named list of JSON elements corresponding to React.js properties and their values}

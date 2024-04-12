@@ -25,6 +25,9 @@
     cursor: grab;
     word-wrap: break-word;
 }
+.toolbox-slim {
+    height: 10px;
+}
 .item-top-container {
     display: flex;
     align-items: center;

@@ -16,11 +16,13 @@ import {
     categorizeContent,
     appendInToolboxFalse,
 } from '../utils';
-import {Toolbox} from './Toolbox.react.js';
+
+import Toolbox from './Toolbox.react.js';
+import GridItem from './GridItem.react.js';
+
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './style.css';
-import GridItem from './GridItem.react.js';
 
 /**
  * ToolBoxGrid is an addition to the ResponsiveGridLayout
@@ -38,6 +40,8 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
     const nb_items_x = Math.floor(max_cols / ncols);
     const col = key % nb_items_x;
     const row = Math.floor(key / nb_items_x);
+
+    // Default values for layout
     const defaultChildLayout = {
         i: id.toString() || key.toString(),
         x: col * ncols,
@@ -45,15 +49,9 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
         w: ncols,
         h: nrows,
     };
-    return {
-        ...defaultChildLayout,
-        ...item_layout,
-        i: id.toString() || key.toString(),
-        x: item_layout.x ? item_layout.x : defaultChildLayout.x,
-        y: item_layout.y ? item_layout.y : defaultChildLayout.y,
-        w: item_layout.w ? item_layout.w : defaultChildLayout.w,
-        h: item_layout.h ? item_layout.h : defaultChildLayout.h,
-    };
+
+    // Merge with incoming item_layout, prioritizing values from item_layout
+    return Object.assign({}, defaultChildLayout, item_layout);
 };
 
 /**
@@ -70,7 +68,7 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
  * on server side by defining a callback with :
  * `Input("<my-id>", "layout")`.
  */
-export default class ToolBoxGrid extends Component {
+class ToolBoxGrid extends Component {
 
     constructor(props) {
 
@@ -91,8 +89,16 @@ export default class ToolBoxGrid extends Component {
             activeWindows: {}
         };
 
-        this.handleResizeStart = this.handleResizeStart.bind(this);
-        this.handleResizeStop = this.handleResizeStop.bind(this);
+        this.handleResizeItemStart = this.handleResizeItemStart.bind(this);
+        this.handleResizeItemStop = this.handleResizeItemStop.bind(this);
+        this.handleDragItemStart = this.handleDragItemStart.bind(this);
+        this.handleDragItemStop = this.handleDragItemStop.bind(this);
+    }
+
+    calculateDimension = (val, def) => {
+        if (val > def) return def;
+        if (val <= 0) return def;
+        return val;
     }
 
     handleDrop = (layout, layoutItem, _event) => {
@@ -107,29 +113,20 @@ export default class ToolBoxGrid extends Component {
             let newX = layoutItem?.x ?? 0;
             let newY = layoutItem?.y ?? 0;
             var items = prevState.layouts[currentBreakpoint];
-            var pos = items.reduce((p, c) => {
+            var limit = items.reduce((p, c) => {
                 if (c.x > newX && c.x < p.x) p.x = c.x;
                 if (c.y > newY && c.y < p.y) p.y = c.y;
                 return p;
             }, {x: GRID_COLS_RESPONSIVE[currentBreakpoint], y: 100})
 
-            if (pos.y == 100) pos.y = 0;
-
-            const valOrMax = (t, max) => {
-                if (t > max) return max;
-                if (t <= 0) return max;
-                return t;
-            }
-
-            let newW = valOrMax(pos.x - newX, prevState.onDropWidth);
-            let newH = valOrMax(pos.y - newY, prevState.onDropHeight);
+            if (limit.y == 100) limit.y = 0;
 
             const newItem = {
                 i: droppedItemId,
                 x: newX,
                 y: newY,
-                w: newW, 
-                h: newH, 
+                w: this.calculateDimension(limit.x - newX, prevState.onDropWidth), 
+                h: this.calculateDimension(limit.y - newY, prevState.onDropHeight), 
                 inToolbox: false,
             };
 
@@ -149,8 +146,10 @@ export default class ToolBoxGrid extends Component {
         });
     };
 
-    /* We need to caputre the changes in break point to find it for the right toolbox. it will enable us to store different 
-    configurations for sizes */
+    /**
+     * We need to capture the changes in break point to find it for the right toolbox. 
+     * It will enable us to store different configurations for sizes
+     */
     handleBreakpointChange = (breakpoint) => {
         this.setState((prevState) => {
             return {
@@ -173,10 +172,15 @@ export default class ToolBoxGrid extends Component {
             saveToLs(`${this.state.id}-layouts`, all_layouts);
         }
         // Set the state of the layout for render
-        // this.setState({all_layouts});
+        this.setState({all_layouts});
     };
 
-    onPutItem = (item) => {
+    /**
+     * Handle the close button on a grid layout item being clicked - this should
+     * result in the item being moved to the toolbox
+     * @param {Object} item 
+     */
+    handleCloseItemClicked = (item) => {
        this.setState((prevState) => {
             const currentBreakpoint = prevState.currentBreakpoint;
             const currentToolbox = prevState.toolbox;
@@ -212,7 +216,7 @@ export default class ToolBoxGrid extends Component {
         () => {});
     }
 
-    handleResizeStart(layout, oldItem, newItem, placeholder, e, element) {
+    handleResizeItemStart(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
             let newState = {...prev};
             newState.activeWindows[oldItem.i] = true;
@@ -220,7 +224,7 @@ export default class ToolBoxGrid extends Component {
         })
     }
 
-    handleResizeStop(layout, oldItem, newItem, placeholder, e, element) {
+    handleResizeItemStop(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
             let newState = {...prev};
             newState.activeWindows[oldItem.i] = false;
@@ -228,8 +232,25 @@ export default class ToolBoxGrid extends Component {
         })
     }
 
-    componentDidMount() {
-        let {children = []} = this.props;
+    handleDragItemStart(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = true;
+            return newState;
+        })
+    }
+
+    handleDragItemStop(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = false;
+            return newState;
+        })
+    }
+
+    calculateInitialLayout() {
+        let children = [];
+
         const {
             id,
             layouts: providedLayouts,
@@ -240,20 +261,22 @@ export default class ToolBoxGrid extends Component {
             gridCols = GRID_COLS_RESPONSIVE,
             toolbox = toolbox,
             currentBreakpoint = currentBreakpoint,
-            defaultInToolbox = inToolbox,
+            defaultInToolbox = inToolbox
         } = this.props;
+        
         const layouts = {};
         let child_props, child_id, isDashboardItem;
 
         children = Array.isArray(children) ? children : [children];
 
+        if (clearSavedLayout) {
+            saveToLs(`${id}-layouts`, null);
+        }
+
         // Build layout on inital start
         //   Priority to client local store [except if specified]
         //   Then layout
         //   And then DashboardItem [except if specified])
-        if (clearSavedLayout) {
-            saveToLs(`${id}-layouts`, null);
-        }
         const savedLayout = getFromLs(`${id}-layouts`);
 
         for (var bkp in breakpoints) {
@@ -297,16 +320,15 @@ export default class ToolBoxGrid extends Component {
                         (el) => el.i === child_id
                     );
                 }
+
                 if (!item_layout && isDashboardItem) {
                     // If we still not have the child, then we make it as long as its a DashboardItem
                     // The layout of a stored toolbox item will be missing if we have a saved layout.
                     // Therfore put it into toolbox
 
                     // The default value for inToolbox is false. This triggers if nothing is provided
-                    let defaultToolbox = false;
-                    if (savedLayout) {
-                        defaultToolbox = true;
-                    }
+                    let defaultToolbox = savedLayout;
+  
                     const {
                         id = {},
                         x = {},
@@ -324,6 +346,7 @@ export default class ToolBoxGrid extends Component {
                         h: typeof h === 'number' ? h : h[bkp],
                         inToolbox: savedLayout ? defaultToolbox : inToolbox,
                     };
+
                     item_layout = defaultItemLayout(
                         item_provided_layout,
                         child_id,
@@ -335,6 +358,7 @@ export default class ToolBoxGrid extends Component {
                         inToolbox
                     );
                 }
+
                 if (!item_layout) {
                     item_layout = defaultItemLayout(
                         {},
@@ -349,21 +373,30 @@ export default class ToolBoxGrid extends Component {
                 }
                 return item_layout;
             });
+
             layouts[bkp] = layout;
         }
 
-        let {filteredLayoutDict, toolboxDict} =
+        let {filteredLayout, toolbox: toolboxLayout} =
             filterLayoutForToolboxItems(layouts);
 
+        return {layout: filteredLayout, toolbox: toolboxLayout, currentBreakpoint};
+    }
+
+    componentDidMount() {
+
+        let {layout, toolbox, currentBreakpoint} = this.calculateInitialLayout();
+
         this.setState((prevState) => ({
-            layouts: filteredLayoutDict,
-            toolbox: toolboxDict,
+            layouts: layout,
+            toolbox: toolbox,
             currentBreakpoint: currentBreakpoint,
         }));
     }
 
     render() {
-        let {children = []} = this.props;
+        let {children = [], toolboxTitle, toolboxComponent} = this.props;
+
         const {
             breakpoints = BREAKPOINTS,
             gridCols = GRID_COLS_RESPONSIVE,
@@ -387,9 +420,11 @@ export default class ToolBoxGrid extends Component {
         return (
             <React.Fragment>
                 <Toolbox
-                    toolboxContent={toolboxContent}
                     breakpoint={breakpoints}
                     layouts={this.state.toolbox}
+                    toolboxTitle={toolboxTitle}
+                    toolboxComponent={toolboxComponent}
+                    toolboxItems={toolboxContent}
                 />
 
                 <ResponsiveReactGridLayout
@@ -402,8 +437,10 @@ export default class ToolBoxGrid extends Component {
                     rowHeight={height}
                     onDrop={this.handleDrop}
                     onLayoutChange={this.handleLayoutChange}
-                    onResizeStart={this.handleResizeStart}
-                    onResizeStop={this.handleResizeStop}
+                    onResizeStart={this.handleResizeItemStart}
+                    onResizeStop={this.handleResizeItemStop}
+                    onDragStart={this.handleDragItemStart}
+                    onDragStop={this.handleDragItemStop}
                     {...this.props}
                 >
                     {gridContent.map((child, key) => {
@@ -413,11 +450,13 @@ export default class ToolBoxGrid extends Component {
                             const child_props = child.props._dashprivate_layout
                                 ? child.props._dashprivate_layout.props
                                 : child.props;
+
                             const isDashboardItem =
                                 (child.props._dashprivate_layout
                                     ? child.props._dashprivate_layout.type
                                     : child.type.name) ===
                                 'DashboardItemResponsive';
+
                             _key = child_props.id || key.toString();
 
                             if (isDashboardItem) {
@@ -443,7 +482,7 @@ export default class ToolBoxGrid extends Component {
                                 key={_key}
                                 className={"item"}
                                 data-grid={_data_grid}
-                                onCloseClicked={() => this.onPutItem(_key)}
+                                onCloseClicked={() => this.handleCloseItemClicked(_key)}
                                 active={this.state.activeWindows[_key] || false}
                             >{child}</GridItem>
                         );
@@ -460,7 +499,6 @@ ToolBoxGrid.defaultProps = {
     children: [],
     style: {},
     className: '',
-
     // Other props defined by react-grid-layout
     autoSize: true,
     // A CSS selector for tags that will not be draggable.
@@ -524,14 +562,15 @@ ToolBoxGrid.propTypes = {
      */
     gridCols: PropTypes.object,
 
-    // margin: PropTypes.oneOfType([
-    //     PropTypes.object,
-    //     PropTypes.arrayOf(PropTypes.object),
-    // ]),
-    // containerPadding: PropTypes.oneOfType([
-    //     PropTypes.object,
-    //     PropTypes.arrayOf(PropTypes.object),
-    // ]),
+    /**
+     * (string) The title above the toolbox.
+     */
+    toolboxTitle: PropTypes.string,
+
+    /**
+     * (React.Component) The custom component to render the toolbox item
+     */
+    toolboxComponent: PropTypes.func,
 
     /**
      * Children is a list of the items (dash Components and/or
@@ -583,33 +622,47 @@ ToolBoxGrid.propTypes = {
      */
     style: PropTypes.object,
 
-    // Other props defined by react-grid-layout
-    // If true, the container height swells and contracts to fit contents
+    /**
+     * (bool) Other props defined by react-grid-layout
+     * If true, the container height swells and contracts to fit contents
+     */
     autoSize: PropTypes.bool,
 
-    // A CSS selector for tags that will not be draggable.
-    // For example: draggableCancel:'.MyNonDraggableAreaClassName'
-    // If you forget the leading . it will not work.
+    /**
+     * (string) A CSS selector for tags that will not be draggable.
+     * or example: draggableCancel:'.MyNonDraggableAreaClassName'
+     * If you forget the leading . it will not work.
+     */
     draggableCancel: PropTypes.string,
 
-    // A CSS selector for tags that will act as the draggable handle.
-    // For example: draggableHandle:'.MyDragHandleClassName'
-    // If you forget the leading . it will not work.
+    /** 
+     * A CSS selector for tags that will act as the draggable handle.
+     * For example: draggableHandle:'.MyDragHandleClassName'
+     * If you forget the leading . it will not work.
+     */
     draggableHandle: PropTypes.string,
 
-    // If true, the layout will compact vertically
+    /**
+     * If true, the layout will compact vertically
+     */
     verticalCompact: PropTypes.bool,
 
-    // Compaction type.
+    /** 
+     * Compaction type.
+     */
     compactType: PropTypes.oneOf(['vertical', 'horizontal']),
 
-    // Margin between items [x, y] in px.
+    /**
+     * Margin between items [x, y] in px.
+     */
     margin: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.number),
         PropTypes.object,
     ]),
 
-    // Padding inside the container [x, y] in px
+    /**
+     * Padding inside the container [x, y] in px
+     */
     containerPadding: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.number),
         PropTypes.object,
@@ -619,46 +672,62 @@ ToolBoxGrid.propTypes = {
      * Are items draggable
      */
     isDraggable: PropTypes.bool,
+    
     /**
      * Are items resizable
      */
     isResizable: PropTypes.bool,
+    
     /**
      * Are items resizable
      */
     isBounded: PropTypes.bool,
-    // Uses CSS3 translate() instead of position top/left.
-    // This makes about 6x faster paint performance
+
+    /**
+     * Uses CSS3 translate() instead of position top/left.
+     * This makes about 6x faster paint performance
+     */
     useCSSTransforms: PropTypes.bool,
-    // If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
-    // we should set scale coefficient to avoid render artefacts while dragging.
+    
+    /**
+     * If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
+     * we should set scale coefficient to avoid render artefacts while dragging.
+     */
     transformScale: PropTypes.number,
 
-    // If true, grid items won't change position when being
-    // dragged over.
+    /**
+     * If true, grid items won't change position when being
+     * dragged over.
+     */
     preventCollision: PropTypes.bool,
 
-    // If true, droppable elements (with `draggable={true}` attribute)
-    // can be dropped on the grid. It triggers "onDrop" callback
-    // with position and event object as parameters.
-    // It can be useful for dropping an element in a specific position
-    //
-    // NOTE: In case of using Firefox you should add
-    // `onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
-    // along with `draggable={true}` otherwise this feature will work incorrect.
-    // onDragStart attribute is required for Firefox for a dragging initialization
-    // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+    /**
+     * If true, droppable elements (with `draggable={true}` attribute)
+     * can be dropped on the grid. It triggers "onDrop" callback
+     * with position and event object as parameters.
+     * It can be useful for dropping an element in a specific position
+     * 
+     * NOTE: In case of using Firefox you should add
+     * `onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
+     * along with `draggable={true}` otherwise this feature will work incorrect.
+     * onDragStart attribute is required for Firefox for a dragging initialization
+     *
+     * @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+     */
     isDroppable: PropTypes.bool,
-    // Defines which resize handles should be rendered
-    // Allows for any combination of:
-    // 's' - South handle (bottom-center)
-    // 'w' - West handle (left-center)
-    // 'e' - East handle (right-center)
-    // 'n' - North handle (top-center)
-    // 'sw' - Southwest handle (bottom-left)
-    // 'nw' - Northwest handle (top-left)
-    // 'se' - Southeast handle (bottom-right)
-    // 'ne' - Northeast handle (top-right)
+
+    /** 
+     * Defines which resize handles should be rendered
+     * Allows for any combination of:
+     * 's' - South handle (bottom-center)
+     * 'w' - West handle (left-center)
+     * 'e' - East handle (right-center)
+     * 'n' - North handle (top-center)
+     * 'sw' - Southwest handle (bottom-left)
+     * 'nw' - Northwest handle (top-left)
+     * 'se' - Southeast handle (bottom-right)
+     * 'ne' - Northeast handle (top-right)
+     */
     resizeHandles: PropTypes.arrayOf(
         PropTypes.oneOf(['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'])
     ),
@@ -673,20 +742,26 @@ ToolBoxGrid.propTypes = {
      * The toolbox layout
      */
     toolbox: PropTypes.object,
+
     /**
      * current breakpoint
      */
     currentBreakpoint: PropTypes.string,
+
     /**
      * Set the default height of items that are dropped from the toolbox into the grid. default is 5
      */
     onDropHeight: PropTypes.number,
+
     /**
      * Set the default height of items that are dropped from the toolbox into the grid. default is 4
      */
     onDropWidth: PropTypes.number,
+
     /**
      * This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default
      */
     defaultInToolbox: PropTypes.bool,
 };
+
+export default ToolBoxGrid;

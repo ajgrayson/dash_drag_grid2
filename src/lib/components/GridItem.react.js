@@ -2,37 +2,11 @@ import React, { Component, useEffect } from "react"
 
 class GridItem extends Component {
 
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            active: false
-        }
-
-        this.activate = this.activate.bind(this);
-        this.deactivate = this.deactivate.bind(this);
-    }
-
-    activate() {
-        this.setState(prev => {
-            let newState = { ...prev };
-            newState.active = true;
-            return newState;
-        })
-    }
-
-    deactivate() {
-        this.setState(prev => {
-            let newState = { ...prev };
-            newState.active = false;
-            return newState;
-        })
-    }
-
     render() {
         const props = this.props;
+        
         let activeClass = "";
-        if (this.state.active || this.props.active) {
+        if (props.active) {
             activeClass = "active";
         }
 
@@ -48,10 +22,7 @@ class GridItem extends Component {
                 onTouchEnd={props.onTouchEnd}
             >
                 <div className="item-top-container">
-                    <div className="item-top"
-                        onMouseDown={() => this.activate()}
-                        onMouseUp={() => this.deactivate()}
-                    >...</div>
+                    <div className="item-top">...</div>
                     <button
                         className="close-button"
                         onClick={() => props.onCloseClicked && props.onCloseClicked()}

@@ -614,7 +614,23 @@
     "displayName": "ToolBoxGrid",
     "methods": [
       {
-        "name": "onDrop",
+        "name": "calculateDimension",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "val",
+            "type": null
+          },
+          {
+            "name": "def",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleDrop",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -634,19 +650,19 @@
         "returns": null
       },
       {
-        "name": "onBreakpointChange",
-        "docblock": null,
+        "name": "handleBreakpointChange",
+        "docblock": "We need to capture the changes in break point to find it for the right toolbox. \nIt will enable us to store different configurations for sizes",
         "modifiers": [],
         "params": [
           {
-            "name": "breakpoint",
-            "type": null
+            "name": "breakpoint"
           }
         ],
-        "returns": null
+        "returns": null,
+        "description": "We need to capture the changes in break point to find it for the right toolbox. \nIt will enable us to store different configurations for sizes"
       },
       {
-        "name": "onLayoutChange",
+        "name": "handleLayoutChange",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -662,15 +678,155 @@
         "returns": null
       },
       {
-        "name": "onPutItem",
-        "docblock": null,
+        "name": "handleCloseItemClicked",
+        "docblock": "Handle the close button on a grid layout item being clicked - this should\nresult in the item being moved to the toolbox\n@param {Object} item",
         "modifiers": [],
         "params": [
           {
             "name": "item",
+            "description": null,
+            "type": {
+              "name": "Object"
+            },
+            "optional": false
+          }
+        ],
+        "returns": null,
+        "description": "Handle the close button on a grid layout item being clicked - this should\nresult in the item being moved to the toolbox"
+      },
+      {
+        "name": "handleResizeItemStart",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "layout",
+            "type": null
+          },
+          {
+            "name": "oldItem",
+            "type": null
+          },
+          {
+            "name": "newItem",
+            "type": null
+          },
+          {
+            "name": "placeholder",
+            "type": null
+          },
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "element",
             "type": null
           }
         ],
+        "returns": null
+      },
+      {
+        "name": "handleResizeItemStop",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "layout",
+            "type": null
+          },
+          {
+            "name": "oldItem",
+            "type": null
+          },
+          {
+            "name": "newItem",
+            "type": null
+          },
+          {
+            "name": "placeholder",
+            "type": null
+          },
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "element",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleDragItemStart",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "layout",
+            "type": null
+          },
+          {
+            "name": "oldItem",
+            "type": null
+          },
+          {
+            "name": "newItem",
+            "type": null
+          },
+          {
+            "name": "placeholder",
+            "type": null
+          },
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "element",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleDragItemStop",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "layout",
+            "type": null
+          },
+          {
+            "name": "oldItem",
+            "type": null
+          },
+          {
+            "name": "newItem",
+            "type": null
+          },
+          {
+            "name": "placeholder",
+            "type": null
+          },
+          {
+            "name": "e",
+            "type": null
+          },
+          {
+            "name": "element",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "calculateInitialLayout",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
         "returns": null
       }
     ],
@@ -702,6 +858,20 @@
         },
         "required": false,
         "description": "({breakpoint: number}) the number of columns in the grid layout.\nDefault value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}."
+      },
+      "toolboxTitle": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "(string) The title above the toolbox."
+      },
+      "toolboxComponent": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "(React.Component) The custom component to render the toolbox item"
       },
       "children": {
         "type": {
@@ -795,7 +965,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "(bool) Other props defined by react-grid-layout\nIf true, the container height swells and contracts to fit contents",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -806,7 +976,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "",
+        "description": "(string) A CSS selector for tags that will not be draggable.\nor example: draggableCancel:'.MyNonDraggableAreaClassName'\nIf you forget the leading . it will not work.",
         "defaultValue": {
           "value": "''",
           "computed": false
@@ -817,7 +987,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "",
+        "description": "A CSS selector for tags that will act as the draggable handle.\nFor example: draggableHandle:'.MyDragHandleClassName'\nIf you forget the leading . it will not work.",
         "defaultValue": {
           "value": "''",
           "computed": false
@@ -828,7 +998,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "If true, the layout will compact vertically",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -849,7 +1019,7 @@
           ]
         },
         "required": false,
-        "description": "",
+        "description": "Compaction type.",
         "defaultValue": {
           "value": "'vertical'",
           "computed": false
@@ -871,7 +1041,7 @@
           ]
         },
         "required": false,
-        "description": "",
+        "description": "Margin between items [x, y] in px.",
         "defaultValue": {
           "value": "[10, 10]",
           "computed": false
@@ -893,7 +1063,7 @@
           ]
         },
         "required": false,
-        "description": "",
+        "description": "Padding inside the container [x, y] in px",
         "defaultValue": {
           "value": "[10, 10]",
           "computed": false
@@ -937,7 +1107,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "Uses CSS3 translate() instead of position top/left.\nThis makes about 6x faster paint performance",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -948,7 +1118,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has \"transform: scale(n)\" css property,\nwe should set scale coefficient to avoid render artefacts while dragging.",
         "defaultValue": {
           "value": "1",
           "computed": false
@@ -959,7 +1129,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "If true, grid items won't change position when being\ndragged over.",
         "defaultValue": {
           "value": "false",
           "computed": false
@@ -970,7 +1140,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "If true, droppable elements (with `draggable={true}` attribute)\ncan be dropped on the grid. It triggers \"onDrop\" callback\nwith position and event object as parameters.\nIt can be useful for dropping an element in a specific position\n\nNOTE: In case of using Firefox you should add\n`onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute\nalong with `draggable={true}` otherwise this feature will work incorrect.\nonDragStart attribute is required for Firefox for a dragging initialization\n\n@see https://bugzilla.mozilla.org/show_bug.cgi?id=568313",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -1018,7 +1188,7 @@
           }
         },
         "required": false,
-        "description": "",
+        "description": "Defines which resize handles should be rendered\nAllows for any combination of:\n's' - South handle (bottom-center)\n'w' - West handle (left-center)\n'e' - East handle (right-center)\n'n' - North handle (top-center)\n'sw' - Southwest handle (bottom-left)\n'nw' - Northwest handle (top-left)\n'se' - Southeast handle (bottom-right)\n'ne' - Northeast handle (top-right)",
         "defaultValue": {
           "value": "['se']",
           "computed": false
@@ -1085,6 +1255,56 @@
           "value": "false",
           "computed": false
         }
+      }
+    }
+  },
+  "src/lib/components/Toolbox.react.js": {
+    "description": "",
+    "displayName": "Toolbox",
+    "methods": [],
+    "props": {
+      "toolboxItems": {
+        "type": {
+          "name": "array"
+        },
+        "required": true,
+        "description": ""
+      },
+      "toolboxTitle": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"Toolbox\"",
+          "computed": false
+        }
+      },
+      "toolboxComponent": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "(label) => <span>{label}</span>",
+          "computed": false
+        }
+      },
+      "layouts": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "breakpoints": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
       }
     }
   }

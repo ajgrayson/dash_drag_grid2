@@ -8,6 +8,7 @@ const version = "0.9.4"
 include("jl/dashboarditemresponsive.jl")
 include("jl/responsivegridlayout.jl")
 include("jl/toolboxgrid.jl")
+include("jl/toolbox.jl")
 
 function __init__()
     DashBase.register_package(
