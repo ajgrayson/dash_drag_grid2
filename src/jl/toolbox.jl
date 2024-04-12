@@ -5,7 +5,7 @@ export toolbox
 """
     toolbox(;kwargs...)
 
-A Toolbox component.
+A ToolBox component.
 
 Keyword arguments:
 - `breakpoints` (Dict; optional)
@@ -16,6 +16,6 @@ Keyword arguments:
 function toolbox(; kwargs...)
         available_props = Symbol[:breakpoints, :layouts, :toolboxItems, :toolboxTitle]
         wild_props = Symbol[]
-        return Component("toolbox", "Toolbox", "dash_drag_grid", available_props, wild_props; kwargs...)
+        return Component("toolbox", "ToolBox", "dash_drag_grid", available_props, wild_props; kwargs...)
 end
 

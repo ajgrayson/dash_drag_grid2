@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react"
+import React, { Component } from "react"
 
 class GridItem extends Component {
 
@@ -23,12 +23,14 @@ class GridItem extends Component {
             >
                 <div className="item-top-container">
                     <div className="item-top">...</div>
-                    <button
-                        className="close-button"
-                        onClick={() => props.onCloseClicked && props.onCloseClicked()}
-                    >
-                        &times;
-                    </button>
+                    {props.closable && (
+                        <button
+                            className="close-button"
+                            onClick={() => props.onCloseClicked && props.onCloseClicked()}
+                        >
+                            &times;
+                        </button>
+                    )}
                 </div>
 
                 <div

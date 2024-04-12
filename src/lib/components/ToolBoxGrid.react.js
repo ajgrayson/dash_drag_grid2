@@ -10,14 +10,14 @@ import {
     NCOLS_RESPONSIVE,
 } from '../constants';
 
-import {saveToLs, getFromLs} from '../localStorage';
+import {saveToLocalStorage, getFromLocalStorage} from '../localStorage';
 import {
     filterLayoutForToolboxItems,
     categorizeContent,
     appendInToolboxFalse,
 } from '../utils';
 
-import Toolbox from './Toolbox.react.js';
+import Toolbox from './ToolBox.react.js';
 import GridItem from './GridItem.react.js';
 
 import 'react-grid-layout/css/styles.css';
@@ -169,7 +169,7 @@ class ToolBoxGrid extends Component {
         // First we save the layout to the local storage
         if (this.state.save) {
             all_layouts = appendInToolboxFalse(all_layouts);
-            saveToLs(`${this.state.id}-layouts`, all_layouts);
+            saveToLocalStorage(`${this.state.id}-layouts`, all_layouts);
         }
         // Set the state of the layout for render
         this.setState({all_layouts});
@@ -270,14 +270,14 @@ class ToolBoxGrid extends Component {
         children = Array.isArray(children) ? children : [children];
 
         if (clearSavedLayout) {
-            saveToLs(`${id}-layouts`, null);
+            saveToLocalStorage(`${id}-layouts`, null);
         }
 
         // Build layout on inital start
         //   Priority to client local store [except if specified]
         //   Then layout
         //   And then DashboardItem [except if specified])
-        const savedLayout = getFromLs(`${id}-layouts`);
+        const savedLayout = getFromLocalStorage(`${id}-layouts`);
 
         for (var bkp in breakpoints) {
             // eslint-disable-next-line no-loop-func

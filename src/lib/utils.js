@@ -5,7 +5,7 @@
  * @param {Object} the current layout grid
  */
 export const filterLayoutForToolboxItems = (layoutDict) => {
-    const toolbox = {};
+    const toolboxLayout = {};
     const filteredLayout = {};
 
     Object.entries(layoutDict).forEach(([breakpoint, items]) => {
@@ -13,10 +13,10 @@ export const filterLayoutForToolboxItems = (layoutDict) => {
         const filteredItems = items.filter(item => !item.inToolbox);
 
         filteredLayout[breakpoint] = filteredItems;
-        toolbox[breakpoint] = toolboxItems;
+        toolboxLayout[breakpoint] = toolboxItems;
     });
 
-    return { filteredLayout, toolbox };
+    return { filteredLayout, toolboxLayout };
 };
 
 /**

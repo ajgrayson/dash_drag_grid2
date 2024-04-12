@@ -8,7 +8,7 @@ import './style.css';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-function Toolbox ({  toolboxItems, toolboxTitle, toolboxComponent, layouts, breakpoints }) {
+function ToolBox ({  toolboxItems, toolboxTitle, toolboxComponent, layouts, breakpoints }) {
 
     const handleDragStart = (id) => (e) => {
         e.dataTransfer.setData('text/plain', id);
@@ -60,7 +60,7 @@ function Toolbox ({  toolboxItems, toolboxTitle, toolboxComponent, layouts, brea
     );
 };
 
-Toolbox.propTypes = {
+ToolBox.propTypes = {
     toolboxItems: PropTypes.array.isRequired,
     toolboxTitle: PropTypes.string,
     toolboxComponent: PropTypes.func,
@@ -68,9 +68,9 @@ Toolbox.propTypes = {
     breakpoints: PropTypes.object
 };
 
-Toolbox.defaultProps = {
+ToolBox.defaultProps = {
     toolboxTitle: "Toolbox",
     toolboxComponent: (label) => <span>{label}</span>
 };
 
-export default Toolbox;
+export default ToolBox;

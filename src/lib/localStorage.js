@@ -1,10 +1,10 @@
+const STORAGE_KEY = 'dash_draggable';
 
-
-export const saveToLs = (key, value) => {
+export const saveToLocalStorage = (key, value) => {
     if (!global.localStorage) {return}
-    const storage = JSON.parse(global.localStorage.getItem('dash_draggable'))
+    const storage = JSON.parse(global.localStorage.getItem(STORAGE_KEY))
     global.localStorage.setItem(
-        `dash_draggable`,
+        STORAGE_KEY,
         JSON.stringify({
             ...storage,
             [key]: value
@@ -12,11 +12,11 @@ export const saveToLs = (key, value) => {
     );
 }
 
-export const getFromLs = (key) => {
+export const getFromLocalStorage = (key) => {
     let ls = {};
     if (!global.localStorage) {return {}}
     try {
-        ls = JSON.parse(global.localStorage.getItem(`dash_draggable`)) || {};
+        ls = JSON.parse(global.localStorage.getItem(STORAGE_KEY)) || {};
     } catch (e) {
         /* Ignore */
     }

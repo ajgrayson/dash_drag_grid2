@@ -1,11 +1,11 @@
 from .DashboardItemResponsive import DashboardItemResponsive
 from .ResponsiveGridLayout import ResponsiveGridLayout
+from .ToolBox import ToolBox
 from .ToolBoxGrid import ToolBoxGrid
-from .Toolbox import Toolbox
 
 __all__ = [
     "DashboardItemResponsive",
     "ResponsiveGridLayout",
-    "ToolBoxGrid",
-    "Toolbox"
+    "ToolBox",
+    "ToolBoxGrid"
 ]

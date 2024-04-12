@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Responsive, WidthProvider as widthProvider} from 'react-grid-layout';
+import GridItem from './GridItem.react';
 
 import {
     NROWS,
@@ -10,7 +11,7 @@ import {
     NCOLS_RESPONSIVE,
 } from '../constants';
 
-import {saveToLs, getFromLs} from '../localStorage';
+import {saveToLocalStorage, getFromLocalStorage} from '../localStorage';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './style.css';
@@ -21,6 +22,8 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
     const nb_items_x = Math.floor(max_cols / ncols);
     const col = key % nb_items_x;
     const row = Math.floor(key / nb_items_x);
+
+    // Default values for layout
     const defaultChildLayout = {
         i: id.toString() || key.toString(),
         x: col * ncols,
@@ -28,16 +31,10 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
         w: ncols,
         h: nrows,
     };
-    return {
-        ...defaultChildLayout,
-        ...item_layout,
-        i: id.toString() || key.toString(),
-        x: item_layout.x ? item_layout.x : defaultChildLayout.x,
-        y: item_layout.y ? item_layout.y : defaultChildLayout.y,
-        w: item_layout.w ? item_layout.w : defaultChildLayout.w,
-        h: item_layout.h ? item_layout.h : defaultChildLayout.h,
-    };
-};
+
+    // Merge with incoming item_layout, prioritizing values from item_layout
+    return Object.assign({}, defaultChildLayout, item_layout);
+}
 
 /**
  * ResponsiveGridLayout is a component for building
@@ -55,11 +52,18 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
  */
 export default class ResponsiveGridLayout extends Component {
     
+    constructor(props) {
+        super(props);
+
+        this.handleResizeStart = this.handleResizeStart.bind(this);
+    }
+
     componentDidUpdate() {
         let {children = []} = this.props;
 
         const {
             id,
+            save,
             layouts: providedLayouts,
             clearSavedLayout,
             ncols = NCOLS_RESPONSIVE,
@@ -79,9 +83,9 @@ export default class ResponsiveGridLayout extends Component {
         //   Then layout
         //   And then DashboardItem [except if specified])
         if (clearSavedLayout) {
-            saveToLs(`${id}-layouts`, null);
+            saveToLocalStorage(`${id}-layouts`, null);
         }
-        const savedLayout = getFromLs(`${id}-layouts`);
+        const savedLayout = getFromLocalStorage(`${id}-layouts`);
 
         for (var bkp in breakpoints) {
             // eslint-disable-next-line no-loop-func
@@ -165,15 +169,18 @@ export default class ResponsiveGridLayout extends Component {
         }
         this.layouts = layouts;
     }
+    
+    getLayoutItem = (layouts, id) => {
+        console.log(layouts, id)
+    }
 
-    onResizeStart = (i, w, h, {e, node}) => {
+    handleResizeStart = (i, w, h) => {
         // Check if the resize handler is being clicked
-        if (!node.classList.contains('resize-handler')) {
-            return;
-        }
-
-        const {layout} = this.state;
-        const l = getLayoutItem(layout, i);
+        // if (!node.classList.contains('resize-handler')) {
+        //     return;
+        // }
+        
+        const l = getLayoutItem(this.layouts, i);
         if (!l) return;
 
         this.setState((prevState) => {
@@ -185,12 +192,19 @@ export default class ResponsiveGridLayout extends Component {
         });
     };
 
+    handleLayoutChange = (current_layout, all_layouts) => {
+        this.layouts = all_layouts;
+
+        if (this.props.save) {
+            saveToLocalStorage(`${this.props.id}-layouts`, all_layouts);
+        }
+    };
+
     render() {
         let {children = []} = this.props;
         const {
             id,
             save,
-            setProps,
             breakpoints = BREAKPOINTS,
             gridCols = GRID_COLS_RESPONSIVE,
             height = ROW_HEIGHT,
@@ -208,15 +222,8 @@ export default class ResponsiveGridLayout extends Component {
                 cols={gridCols}
                 breakpoints={breakpoints}
                 rowHeight={height}
-                onResizeStart={this.onResizeStart}
-                onLayoutChange={(current_layout, all_layouts) => {
-                    this.layouts = all_layouts;
-
-                    setProps({current_layout, layouts: all_layouts});
-                    if (save) {
-                        saveToLs(`${id}-layouts`, all_layouts);
-                    }
-                }}
+                onResizeStart={this.handleResizeStart}
+                onLayoutChange={this.handleLayoutChange}
                 {...this.props}
             >
                 {children.map((child, key) => {
@@ -226,11 +233,13 @@ export default class ResponsiveGridLayout extends Component {
                         const child_props = child.props._dashprivate_layout
                             ? child.props._dashprivate_layout.props
                             : child.props;
+
                         const isDashboardItem =
                             (child.props._dashprivate_layout
                                 ? child.props._dashprivate_layout.type
                                 : child.type.name) ===
                             'DashboardItemResponsive';
+
                         _key = child_props.id || key.toString();
 
                         if (isDashboardItem) {
@@ -251,28 +260,13 @@ export default class ResponsiveGridLayout extends Component {
                         _key = key.toString();
                     }
                     return (
-                        <div key={_key} className="item" data-grid={_data_grid}>
-                            {
-                                <div className="item-top">
-                                    <span className="item-top-content">
-                                        ...
-                                    </span>
-                                    {/* 
-                                        <div className="item-top-right">...</div> 
-                                        Maybe we could add a menu to change the 
-                                        properties of the item.
-                                        (static, draggable, resizeable, ...)
-                                    */}
-                                </div>
-                            }
-                            <div
-                                className="item-content"
-                                onMouseDown={(e) => e.stopPropagation()}
-                            >
-                                {child}
-                            </div>
-                        </div>
-                    );
+                        <GridItem
+                            key={_key}
+                            className={"item"}
+                            data-grid={_data_grid}
+                        >
+                            {child}
+                        </GridItem>);
                 })}
             </ResponsiveReactGridLayout>
         );
@@ -344,14 +338,6 @@ ResponsiveGridLayout.propTypes = {
      */
     gridCols: PropTypes.object,
 
-    // margin: PropTypes.oneOfType([
-    //     PropTypes.object,
-    //     PropTypes.arrayOf(PropTypes.object),
-    // ]),
-    // containerPadding: PropTypes.oneOfType([
-    //     PropTypes.object,
-    //     PropTypes.arrayOf(PropTypes.object),
-    // ]),
 
     /**
      * Children is a list of the items (dash Components and/or
@@ -403,33 +389,47 @@ ResponsiveGridLayout.propTypes = {
      */
     style: PropTypes.object,
 
-    // Other props defined by react-grid-layout
-    // If true, the container height swells and contracts to fit contents
+    /**
+     * (bool) Other props defined by react-grid-layout
+     * If true, the container height swells and contracts to fit contents
+     */
     autoSize: PropTypes.bool,
 
-    // A CSS selector for tags that will not be draggable.
-    // For example: draggableCancel:'.MyNonDraggableAreaClassName'
-    // If you forget the leading . it will not work.
+    /**
+     * (string) A CSS selector for tags that will not be draggable.
+     * or example: draggableCancel:'.MyNonDraggableAreaClassName'
+     * If you forget the leading . it will not work.
+     */
     draggableCancel: PropTypes.string,
 
-    // A CSS selector for tags that will act as the draggable handle.
-    // For example: draggableHandle:'.MyDragHandleClassName'
-    // If you forget the leading . it will not work.
+    /** 
+     * A CSS selector for tags that will act as the draggable handle.
+     * For example: draggableHandle:'.MyDragHandleClassName'
+     * If you forget the leading . it will not work.
+     */
     draggableHandle: PropTypes.string,
 
-    // If true, the layout will compact vertically
+    /**
+     * If true, the layout will compact vertically
+     */
     verticalCompact: PropTypes.bool,
 
-    // Compaction type.
+    /** 
+     * Compaction type.
+     */
     compactType: PropTypes.oneOf(['vertical', 'horizontal']),
 
-    // Margin between items [x, y] in px.
+    /**
+     * Margin between items [x, y] in px.
+     */
     margin: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.number),
         PropTypes.object,
     ]),
 
-    // Padding inside the container [x, y] in px
+    /**
+     * Padding inside the container [x, y] in px
+     */
     containerPadding: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.number),
         PropTypes.object,
@@ -439,46 +439,62 @@ ResponsiveGridLayout.propTypes = {
      * Are items draggable
      */
     isDraggable: PropTypes.bool,
+    
     /**
      * Are items resizable
      */
     isResizable: PropTypes.bool,
+    
     /**
      * Are items resizable
      */
     isBounded: PropTypes.bool,
-    // Uses CSS3 translate() instead of position top/left.
-    // This makes about 6x faster paint performance
+
+    /**
+     * Uses CSS3 translate() instead of position top/left.
+     * This makes about 6x faster paint performance
+     */
     useCSSTransforms: PropTypes.bool,
-    // If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
-    // we should set scale coefficient to avoid render artefacts while dragging.
+    
+    /**
+     * If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
+     * we should set scale coefficient to avoid render artefacts while dragging.
+     */
     transformScale: PropTypes.number,
 
-    // If true, grid items won't change position when being
-    // dragged over.
+    /**
+     * If true, grid items won't change position when being
+     * dragged over.
+     */
     preventCollision: PropTypes.bool,
 
-    // If true, droppable elements (with `draggable={true}` attribute)
-    // can be dropped on the grid. It triggers "onDrop" callback
-    // with position and event object as parameters.
-    // It can be useful for dropping an element in a specific position
-    //
-    // NOTE: In case of using Firefox you should add
-    // `onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
-    // along with `draggable={true}` otherwise this feature will work incorrect.
-    // onDragStart attribute is required for Firefox for a dragging initialization
-    // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+    /**
+     * If true, droppable elements (with `draggable={true}` attribute)
+     * can be dropped on the grid. It triggers "onDrop" callback
+     * with position and event object as parameters.
+     * It can be useful for dropping an element in a specific position
+     * 
+     * NOTE: In case of using Firefox you should add
+     * `onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
+     * along with `draggable={true}` otherwise this feature will work incorrect.
+     * onDragStart attribute is required for Firefox for a dragging initialization
+     *
+     * @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+     */
     isDroppable: PropTypes.bool,
-    // Defines which resize handles should be rendered
-    // Allows for any combination of:
-    // 's' - South handle (bottom-center)
-    // 'w' - West handle (left-center)
-    // 'e' - East handle (right-center)
-    // 'n' - North handle (top-center)
-    // 'sw' - Southwest handle (bottom-left)
-    // 'nw' - Northwest handle (top-left)
-    // 'se' - Southeast handle (bottom-right)
-    // 'ne' - Northeast handle (top-right)
+
+    /** 
+     * Defines which resize handles should be rendered
+     * Allows for any combination of:
+     * 's' - South handle (bottom-center)
+     * 'w' - West handle (left-center)
+     * 'e' - East handle (right-center)
+     * 'n' - North handle (top-center)
+     * 'sw' - Southwest handle (bottom-left)
+     * 'nw' - Northwest handle (top-left)
+     * 'se' - Southeast handle (bottom-right)
+     * 'ne' - Northeast handle (top-right)
+     */
     resizeHandles: PropTypes.arrayOf(
         PropTypes.oneOf(['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'])
     ),
@@ -487,5 +503,5 @@ ResponsiveGridLayout.propTypes = {
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
-    setProps: PropTypes.func,
+    setProps: PropTypes.func
 };
