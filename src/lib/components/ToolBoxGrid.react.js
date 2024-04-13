@@ -74,7 +74,6 @@ class ToolBoxGrid extends Component {
 
         // Take all elememts passed from the parent we need
         super(props);
-
         this.state = {
             currentBreakpoint: props.currentBreakpoint,
             toolbox: this.props.toolbox,
@@ -103,7 +102,6 @@ class ToolBoxGrid extends Component {
 
     handleDrop = (layout, layoutItem, _event) => {
         _event.persist();
-
         this.setState((prevState) => {
             // Retrieve the data set in the drag start event
             const droppedItemId = _event.dataTransfer.getData('text/plain');
@@ -129,7 +127,6 @@ class ToolBoxGrid extends Component {
                 h: this.calculateDimension(limit.y - newY, prevState.onDropHeight), 
                 inToolbox: false,
             };
-
             // Update the layout array for the current breakpoint
             const updatedLayouts = {
                 ...prevState.layouts,
@@ -173,6 +170,7 @@ class ToolBoxGrid extends Component {
         }
         // Set the state of the layout for render
         this.setState({all_layouts});
+        this.setState({all_layouts});
     };
 
     /**
@@ -186,23 +184,23 @@ class ToolBoxGrid extends Component {
             const currentToolbox = prevState.toolbox;
             const currentLayout = prevState.layouts;
 
-            // Find the item in the currentLayout at currentBreakpoint
-            const layoutIndex = currentLayout[currentBreakpoint].findIndex(
-                (layoutItem) => layoutItem.i === item
-            );
+                // Find the item in the currentLayout at currentBreakpoint
+                const layoutIndex = currentLayout[currentBreakpoint].findIndex(
+                    (layoutItem) => layoutItem.i === item
+                );
 
-            // If the item is found, remove it from currentLayout and store it
-            let toToolbox = null;
-            if (layoutIndex !== -1) {
-                toToolbox = currentLayout[currentBreakpoint][layoutIndex];
-                currentLayout[currentBreakpoint].splice(layoutIndex, 1);
-            }
+                // If the item is found, remove it from currentLayout and store it
+                let toToolbox = null;
+                if (layoutIndex !== -1) {
+                    toToolbox = currentLayout[currentBreakpoint][layoutIndex];
+                    currentLayout[currentBreakpoint].splice(layoutIndex, 1);
+                }
 
-            // Append the toToolbox item to the currentToolbox at the right breakpoint
-            const updatedToolbox = [
-                ...currentToolbox[currentBreakpoint],
-                toToolbox,
-            ];
+                // Append the toToolbox item to the currentToolbox at the right breakpoint
+                const updatedToolbox = [
+                    ...currentToolbox[currentBreakpoint],
+                    toToolbox,
+                ];
 
             // Update the state of layout and toolbox to render the content
             return {
@@ -418,7 +416,6 @@ class ToolBoxGrid extends Component {
         toolboxContent = Array.isArray(toolboxContent)
             ? toolboxContent
             : [toolboxContent];
-
         return (
             <React.Fragment>
                 <ToolBox

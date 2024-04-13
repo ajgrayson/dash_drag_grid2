@@ -89,7 +89,6 @@ export default class ResponsiveGridLayout extends Component {
 
     calculateInitialLayout() {
         let {children = []} = this.props;
-
         const {
             id,
             layouts: providedLayouts,
@@ -143,7 +142,6 @@ export default class ResponsiveGridLayout extends Component {
                         child_id = JSON.stringify(child_id);
                     }
                 }
-
                 // Define the layout for the specific item x breakpoint
                 if (savedLayout && savedLayout[bkp]) {
                     // First we check if we find the child in the saved layouts
