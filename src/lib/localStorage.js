@@ -13,7 +13,6 @@ export const saveToLocalStorage = (key, value) => {
 }
 
 export const getFromLocalStorage = (key) => {
-    console.log('getFromLocalStorage')
     let ls = {};
     if (!global.localStorage) { return {} }
     try {
