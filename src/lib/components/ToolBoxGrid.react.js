@@ -278,11 +278,11 @@ class ToolBoxGrid extends Component {
         const savedLayout = getFromLocalStorage(`${id}-layouts`);
 
         for (var bkp in breakpoints) {
-            console.log('bkp', bkp)
+            
             // eslint-disable-next-line no-loop-func
             const layout = children.map((child, key) => {
                 let item_layout;
-                console.log('child', child, 'key', key)
+                
                 // Get the child id and props
                 // Depending on wether it is a string, a classic React component, or a DashboardItem
                 if (typeof child === 'string') {
