@@ -27,8 +27,7 @@ DashboardItem) to diplay on the layout.
 By default all the items can be dragged and resized.
 - `id` (String; optional): (string) The ID used to identify this component in Dash callbacks.
 The id is also used to automatically save the layout on client side.
-- `autoSize` (Bool; optional): (bool) Other props defined by react-grid-layout
-If true, the container height swells and contracts to fit contents
+- `autoSize` (Bool; optional)
 - `breakpoints` (Dict; optional): ({breakpoint: number}) The breakpoints for the responsive layout.
 For each screen size (breakpoint) we can define a different layout.
 (see also 'layouts' and 'gridCols' arguments)
@@ -36,31 +35,17 @@ Default value is {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}
 - `className` (String; optional): (string) class passed to the react-grid-layout component
 - `clearSavedLayout` (Bool; optional): (bool) If set to true, the position of elements saved on client side
 will be cleared on the next page load.
-- `compactType` (a value equal to: 'vertical', 'horizontal'; optional): Compaction type.
-- `containerPadding` (Array of Reals | Dict; optional): Padding inside the container [x, y] in px
-- `draggableCancel` (String; optional): (string) A CSS selector for tags that will not be draggable.
-or example: draggableCancel:'.MyNonDraggableAreaClassName'
-If you forget the leading . it will not work.
-- `draggableHandle` (String; optional): A CSS selector for tags that will act as the draggable handle.
-For example: draggableHandle:'.MyDragHandleClassName'
-If you forget the leading . it will not work.
+- `compactType` (a value equal to: 'vertical', 'horizontal'; optional)
+- `containerPadding` (Array of Reals | Dict; optional)
+- `draggableCancel` (String; optional)
+- `draggableHandle` (String; optional)
 - `gridCols` (Dict; optional): ({breakpoint: number}) the number of columns in the grid layout.
 Default value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}.
 - `height` (Real; optional): (number) height of a row (in px).
 Default value is 30.
 - `isBounded` (Bool; optional): Are items resizable
 - `isDraggable` (Bool; optional): Are items draggable
-- `isDroppable` (Bool; optional): If true, droppable elements (with `draggable={true}` attribute)
-can be dropped on the grid. It triggers "onDrop" callback
-with position and event object as parameters.
-It can be useful for dropping an element in a specific position
-
-NOTE: In case of using Firefox you should add
-`onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute
-along with `draggable={true}` otherwise this feature will work incorrect.
-onDragStart attribute is required for Firefox for a dragging initialization
-
-@see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+- `isDroppable` (Bool; optional)
 - `isResizable` (Bool; optional): Are items resizable
 - `layouts` (Dict; optional): Layout is a list(python)/vector(R) of dictionnary(Python)/list(R) with the format:
 {x: number, y: number, w: number, h: number}
@@ -70,31 +55,19 @@ array objects like so:
 {i: string, x: number, y: number, w: number, h: number}
 The ID used to identify this component in Dash callbacks.
 The id is also used to automatically save the layout on client side.
-- `margin` (Array of Reals | Dict; optional): Margin between items [x, y] in px.
+- `margin` (Array of Reals | Dict; optional)
 - `ncols` (Dict; optional): ({breakpoint: number}) the default number of columns by item.
 Default value is {lg: 6, md: 5, sm: 3, xs: 4, xxs: 2}.
 - `nrows` (Real; optional): (number) the default number of row by item.
 Default value is 8.
-- `preventCollision` (Bool; optional): If true, grid items won't change position when being
-dragged over.
-- `resizeHandles` (Array of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's; optional): Defines which resize handles should be rendered
-Allows for any combination of:
-'s' - South handle (bottom-center)
-'w' - West handle (left-center)
-'e' - East handle (right-center)
-'n' - North handle (top-center)
-'sw' - Southwest handle (bottom-left)
-'nw' - Northwest handle (top-left)
-'se' - Southeast handle (bottom-right)
-'ne' - Northeast handle (top-right)
+- `preventCollision` (Bool; optional)
+- `resizeHandles` (Array of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's; optional)
 - `save` (Bool; optional): (bool) If True, then the layout is automatically saved on client browser.
 Default value is True
 - `style` (Dict; optional): (dict) css style passed to the react-grid-layout component
-- `transformScale` (Real; optional): If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
-we should set scale coefficient to avoid render artefacts while dragging.
-- `useCSSTransforms` (Bool; optional): Uses CSS3 translate() instead of position top/left.
-This makes about 6x faster paint performance
-- `verticalCompact` (Bool; optional): If true, the layout will compact vertically
+- `transformScale` (Real; optional)
+- `useCSSTransforms` (Bool; optional)
+- `verticalCompact` (Bool; optional)
 """
 function responsivegridlayout(; kwargs...)
         available_props = Symbol[:children, :id, :autoSize, :breakpoints, :className, :clearSavedLayout, :compactType, :containerPadding, :draggableCancel, :draggableHandle, :gridCols, :height, :isBounded, :isDraggable, :isDroppable, :isResizable, :layouts, :margin, :ncols, :nrows, :preventCollision, :resizeHandles, :save, :style, :transformScale, :useCSSTransforms, :verticalCompact]

@@ -30,9 +30,7 @@ Keyword arguments:
     The id is also used to automatically save the layout on client
     side.
 
-- autoSize (boolean; default True):
-    (bool) Other props defined by react-grid-layout If True, the
-    container height swells and contracts to fit contents.
+- autoSize (boolean; default True)
 
 - breakpoints (dict; optional):
     ({breakpoint: number}) The breakpoints for the responsive layout.
@@ -47,21 +45,13 @@ Keyword arguments:
     (bool) If set to True, the position of elements saved on client
     side will be cleared on the next page load.
 
-- compactType (a value equal to: 'vertical', 'horizontal'; default 'vertical'):
-    Compaction type.
+- compactType (a value equal to: 'vertical', 'horizontal'; default 'vertical')
 
-- containerPadding (list of numbers | dict; default [10, 10]):
-    Padding inside the container [x, y] in px.
+- containerPadding (list of numbers | dict; default [10, 10])
 
-- draggableCancel (string; default ''):
-    (string) A CSS selector for tags that will not be draggable. or
-    example: draggableCancel:'.MyNonDraggableAreaClassName' If you
-    forget the leading . it will not work.
+- draggableCancel (string; default '')
 
-- draggableHandle (string; default ''):
-    A CSS selector for tags that will act as the draggable handle. For
-    example: draggableHandle:'.MyDragHandleClassName' If you forget
-    the leading . it will not work.
+- draggableHandle (string; default '')
 
 - gridCols (dict; optional):
     ({breakpoint: number}) the number of columns in the grid layout.
@@ -76,17 +66,7 @@ Keyword arguments:
 - isDraggable (boolean; default True):
     Are items draggable.
 
-- isDroppable (boolean; default False):
-    If True, droppable elements (with `draggable={True}` attribute)
-    can be dropped on the grid. It triggers \"onDrop\" callback with
-    position and event object as parameters. It can be useful for
-    dropping an element in a specific position  NOTE: In case of using
-    Firefox you should add `onDragStart={e =>
-    e.dataTransfer.setData('text/plain', '')}` attribute along with
-    `draggable={True}` otherwise this feature will work incorrect.
-    onDragStart attribute is required for Firefox for a dragging
-    initialization  @see
-    https://bugzilla.mozilla.org/show_bug.cgi?id=568313.
+- isDroppable (boolean; default False)
 
 - isResizable (boolean; default True):
     Are items resizable.
@@ -101,8 +81,7 @@ Keyword arguments:
     identify this component in Dash callbacks. The id is also used to
     automatically save the layout on client side.
 
-- margin (list of numbers | dict; default [10, 10]):
-    Margin between items [x, y] in px.
+- margin (list of numbers | dict; default [10, 10])
 
 - ncols (dict; optional):
     ({breakpoint: number}) the default number of columns by item.
@@ -111,16 +90,9 @@ Keyword arguments:
 - nrows (number; optional):
     (number) the default number of row by item. Default value is 8.
 
-- preventCollision (boolean; default False):
-    If True, grid items won't change position when being dragged over.
+- preventCollision (boolean; default False)
 
-- resizeHandles (list of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's; default ['se']):
-    Defines which resize handles should be rendered Allows for any
-    combination of: 's' - South handle (bottom-center) 'w' - West
-    handle (left-center) 'e' - East handle (right-center) 'n' - North
-    handle (top-center) 'sw' - Southwest handle (bottom-left) 'nw' -
-    Northwest handle (top-left) 'se' - Southeast handle (bottom-right)
-    'ne' - Northeast handle (top-right).
+- resizeHandles (list of a value equal to: 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne's; default ['se'])
 
 - save (boolean; default True):
     (bool) If True, then the layout is automatically saved on client
@@ -129,17 +101,11 @@ Keyword arguments:
 - style (dict; optional):
     (dict) css style passed to the react-grid-layout component.
 
-- transformScale (number; default 1):
-    If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout
-    has \"transform: scale(n)\" css property, we should set scale
-    coefficient to avoid render artefacts while dragging.
+- transformScale (number; default 1)
 
-- useCSSTransforms (boolean; default True):
-    Uses CSS3 translate() instead of position top/left. This makes
-    about 6x faster paint performance.
+- useCSSTransforms (boolean; default True)
 
-- verticalCompact (boolean; default True):
-    If True, the layout will compact vertically."""
+- verticalCompact (boolean; default True)"""
     _children_props = []
     _base_nodes = ['children']
     _namespace = 'dash_drag_grid'

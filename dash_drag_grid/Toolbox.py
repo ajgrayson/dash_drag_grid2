@@ -3,8 +3,8 @@
 from dash.development.base_component import Component, _explicitize_args
 
 
-class Toolbox(Component):
-    """A Toolbox component.
+class ToolBox(Component):
+    """A ToolBox component.
 
 
 Keyword arguments:
@@ -19,7 +19,7 @@ Keyword arguments:
     _children_props = []
     _base_nodes = ['children']
     _namespace = 'dash_drag_grid'
-    _type = 'Toolbox'
+    _type = 'ToolBox'
     @_explicitize_args
     def __init__(self, toolboxItems=Component.REQUIRED, toolboxTitle=Component.UNDEFINED, toolboxComponent=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, **kwargs):
         self._prop_names = ['breakpoints', 'layouts', 'toolboxItems', 'toolboxTitle']
@@ -36,4 +36,4 @@ Keyword arguments:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')
 
-        super(Toolbox, self).__init__(**args)
+        super(ToolBox, self).__init__(**args)

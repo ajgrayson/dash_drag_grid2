@@ -23,7 +23,7 @@ class GridItem extends Component {
             >
                 <div className="item-top-container">
                     <div className="item-top">...</div>
-                    {props.closable && (
+                    {props.canClose && (
                         <button
                             className="close-button"
                             onClick={() => props.onCloseClicked && props.onCloseClicked()}

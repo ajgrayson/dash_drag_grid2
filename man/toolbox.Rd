@@ -1,16 +1,16 @@
 % Auto-generated: do not edit by hand
-\name{toolbox}
+\name{toolBox}
 
-\alias{toolbox}
+\alias{toolBox}
 
-\title{Toolbox component}
+\title{ToolBox component}
 
 \description{
 
 }
 
 \usage{
-toolbox(breakpoints=NULL, layouts=NULL, toolboxComponent=NULL,
+toolBox(breakpoints=NULL, layouts=NULL, toolboxComponent=NULL,
 toolboxItems=NULL, toolboxTitle=NULL)
 }
 

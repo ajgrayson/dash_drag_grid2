@@ -226,42 +226,6 @@
     "displayName": "ResponsiveGridLayout",
     "methods": [
       {
-        "name": "getLayoutItem",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "layouts",
-            "type": null
-          },
-          {
-            "name": "id",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleResizeStart",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "i",
-            "type": null
-          },
-          {
-            "name": "w",
-            "type": null
-          },
-          {
-            "name": "h",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
         "name": "handleLayoutChange",
         "docblock": null,
         "modifiers": [],
@@ -275,6 +239,25 @@
             "type": null
           }
         ],
+        "returns": null
+      },
+      {
+        "name": "handleBreakpointChange",
+        "docblock": "We need to capture the changes in break point to find it for the right toolbox. \nIt will enable us to store different configurations for sizes",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "breakpoint"
+          }
+        ],
+        "returns": null,
+        "description": "We need to capture the changes in break point to find it for the right toolbox. \nIt will enable us to store different configurations for sizes"
+      },
+      {
+        "name": "calculateInitialLayout",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
         "returns": null
       }
     ],
@@ -399,7 +382,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "(bool) Other props defined by react-grid-layout\nIf true, the container height swells and contracts to fit contents",
+        "description": "",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -410,7 +393,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "(string) A CSS selector for tags that will not be draggable.\nor example: draggableCancel:'.MyNonDraggableAreaClassName'\nIf you forget the leading . it will not work.",
+        "description": "",
         "defaultValue": {
           "value": "''",
           "computed": false
@@ -421,7 +404,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "A CSS selector for tags that will act as the draggable handle.\nFor example: draggableHandle:'.MyDragHandleClassName'\nIf you forget the leading . it will not work.",
+        "description": "",
         "defaultValue": {
           "value": "''",
           "computed": false
@@ -432,7 +415,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "If true, the layout will compact vertically",
+        "description": "",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -453,7 +436,7 @@
           ]
         },
         "required": false,
-        "description": "Compaction type.",
+        "description": "",
         "defaultValue": {
           "value": "'vertical'",
           "computed": false
@@ -475,7 +458,7 @@
           ]
         },
         "required": false,
-        "description": "Margin between items [x, y] in px.",
+        "description": "",
         "defaultValue": {
           "value": "[10, 10]",
           "computed": false
@@ -497,7 +480,7 @@
           ]
         },
         "required": false,
-        "description": "Padding inside the container [x, y] in px",
+        "description": "",
         "defaultValue": {
           "value": "[10, 10]",
           "computed": false
@@ -541,7 +524,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "Uses CSS3 translate() instead of position top/left.\nThis makes about 6x faster paint performance",
+        "description": "",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -552,7 +535,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has \"transform: scale(n)\" css property,\nwe should set scale coefficient to avoid render artefacts while dragging.",
+        "description": "",
         "defaultValue": {
           "value": "1",
           "computed": false
@@ -563,7 +546,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "If true, grid items won't change position when being\ndragged over.",
+        "description": "",
         "defaultValue": {
           "value": "false",
           "computed": false
@@ -574,7 +557,7 @@
           "name": "bool"
         },
         "required": false,
-        "description": "If true, droppable elements (with `draggable={true}` attribute)\ncan be dropped on the grid. It triggers \"onDrop\" callback\nwith position and event object as parameters.\nIt can be useful for dropping an element in a specific position\n\nNOTE: In case of using Firefox you should add\n`onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute\nalong with `draggable={true}` otherwise this feature will work incorrect.\nonDragStart attribute is required for Firefox for a dragging initialization\n\n@see https://bugzilla.mozilla.org/show_bug.cgi?id=568313",
+        "description": "",
         "defaultValue": {
           "value": "false",
           "computed": false
@@ -622,7 +605,7 @@
           }
         },
         "required": false,
-        "description": "Defines which resize handles should be rendered\nAllows for any combination of:\n's' - South handle (bottom-center)\n'w' - West handle (left-center)\n'e' - East handle (right-center)\n'n' - North handle (top-center)\n'sw' - Southwest handle (bottom-left)\n'nw' - Northwest handle (top-left)\n'se' - Southeast handle (bottom-right)\n'ne' - Northeast handle (top-right)",
+        "description": "",
         "defaultValue": {
           "value": "['se']",
           "computed": false

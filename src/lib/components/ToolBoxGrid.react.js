@@ -17,7 +17,7 @@ import {
     appendInToolboxFalse,
 } from '../utils';
 
-import Toolbox from './ToolBox.react.js';
+import ToolBox from './ToolBox.react.js';
 import GridItem from './GridItem.react.js';
 
 import 'react-grid-layout/css/styles.css';
@@ -72,7 +72,7 @@ class ToolBoxGrid extends Component {
 
     constructor(props) {
 
-        // Takee all elememts passed from the parent we need
+        // Take all elememts passed from the parent we need
         super(props);
 
         this.state = {
@@ -249,7 +249,7 @@ class ToolBoxGrid extends Component {
     }
 
     calculateInitialLayout() {
-        let children = [];
+        let {children = []} = this.props;
 
         const {
             id,
@@ -280,10 +280,11 @@ class ToolBoxGrid extends Component {
         const savedLayout = getFromLocalStorage(`${id}-layouts`);
 
         for (var bkp in breakpoints) {
+            console.log('bkp', bkp)
             // eslint-disable-next-line no-loop-func
             const layout = children.map((child, key) => {
                 let item_layout;
-
+                console.log('child', child, 'key', key)
                 // Get the child id and props
                 // Depending on wether it is a string, a classic React component, or a DashboardItem
                 if (typeof child === 'string') {
@@ -377,14 +378,13 @@ class ToolBoxGrid extends Component {
             layouts[bkp] = layout;
         }
 
-        let {filteredLayout, toolbox: toolboxLayout} =
+        let {filteredLayout, toolboxLayout} =
             filterLayoutForToolboxItems(layouts);
 
         return {layout: filteredLayout, toolbox: toolboxLayout, currentBreakpoint};
     }
 
     componentDidMount() {
-
         let {layout, toolbox, currentBreakpoint} = this.calculateInitialLayout();
 
         this.setState((prevState) => ({
@@ -412,14 +412,16 @@ class ToolBoxGrid extends Component {
             this.state.layouts,
             this.state.currentBreakpoint
         );
+
         gridContent = Array.isArray(gridContent) ? gridContent : [gridContent];
+        
         toolboxContent = Array.isArray(toolboxContent)
             ? toolboxContent
             : [toolboxContent];
 
         return (
             <React.Fragment>
-                <Toolbox
+                <ToolBox
                     breakpoint={breakpoints}
                     layouts={this.state.toolbox}
                     toolboxTitle={toolboxTitle}
@@ -482,6 +484,7 @@ class ToolBoxGrid extends Component {
                                 key={_key}
                                 className={"item"}
                                 data-grid={_data_grid}
+                                canClose={true}
                                 onCloseClicked={() => this.handleCloseItemClicked(_key)}
                                 active={this.state.activeWindows[_key] || false}
                             >{child}</GridItem>
