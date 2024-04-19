@@ -11,11 +11,9 @@ import './style.css';
  * DashboardItemResponsive is a wrapper that is intended to be used with ResponsiveGridlayout and ToolBoxGrid.
  * DashboardItemResponsive specify the position and size of the item on the dashboard and if it is in the toolbox.
  */
-export default class DashboardItemResponsive extends React.Component {
-    render() {
-        const {children, inToolbox, defaultName} = this.props;
-        return children;
-    }
+const DashboardItemResponsive = (props) => {
+    const {children} = props;
+    return <>{children}</>;
 }
 
 DashboardItemResponsive.defaultProps = {
@@ -115,6 +113,7 @@ DashboardItemResponsive.propTypes = {
      * to Dash, to make them available for callbacks.
      */
     setProps: PropTypes.func,
+    
     /**
      * Is the Item in the toolbox. Default is false and set by the grid. Overwrites the grid default value
      */
@@ -124,4 +123,11 @@ DashboardItemResponsive.propTypes = {
      * The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID
      */
     defaultName: PropTypes.string,
+
+    /**
+     * Pass in a react component as a prop to be rendered as the contents of the toolbox item
+     */
+    iconComponent: PropTypes.node
 };
+
+export default DashboardItemResponsive;

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Responsive, WidthProvider as widthProvider} from 'react-grid-layout';
+import { Responsive, WidthProvider as widthProvider } from 'react-grid-layout';
 
 import {
     NROWS,
@@ -10,7 +10,7 @@ import {
     NCOLS_RESPONSIVE,
 } from '../constants';
 
-import {saveToLocalStorage, getFromLocalStorage} from '../localStorage';
+import { saveToLocalStorage, getFromLocalStorage } from '../localStorage';
 import {
     filterLayoutForToolboxItems,
     categorizeContent,
@@ -92,6 +92,7 @@ class ToolBoxGrid extends Component {
         this.handleResizeItemStop = this.handleResizeItemStop.bind(this);
         this.handleDragItemStart = this.handleDragItemStart.bind(this);
         this.handleDragItemStop = this.handleDragItemStop.bind(this);
+        // this.handleLayoutChange = this.handleLayoutChange.bind(this);
     }
 
     calculateDimension = (val, def) => {
@@ -101,12 +102,13 @@ class ToolBoxGrid extends Component {
     }
 
     handleDrop = (layout, layoutItem, _event) => {
+        console.log('handleDrop', layoutItem)
         _event.persist();
         this.setState((prevState) => {
             // Retrieve the data set in the drag start event
             const droppedItemId = _event.dataTransfer.getData('text/plain');
             const currentBreakpoint = prevState.currentBreakpoint;
-    
+
             // Calculate the max available space from x/y
             let newX = layoutItem?.x ?? 0;
             let newY = layoutItem?.y ?? 0;
@@ -115,7 +117,7 @@ class ToolBoxGrid extends Component {
                 if (c.x > newX && c.x < p.x) p.x = c.x;
                 if (c.y > newY && c.y < p.y) p.y = c.y;
                 return p;
-            }, {x: GRID_COLS_RESPONSIVE[currentBreakpoint], y: 100})
+            }, { x: GRID_COLS_RESPONSIVE[currentBreakpoint], y: 100 })
 
             if (limit.y == 100) limit.y = 0;
 
@@ -123,8 +125,8 @@ class ToolBoxGrid extends Component {
                 i: droppedItemId,
                 x: newX,
                 y: newY,
-                w: this.calculateDimension(limit.x - newX, prevState.onDropWidth), 
-                h: this.calculateDimension(limit.y - newY, prevState.onDropHeight), 
+                w: this.calculateDimension(limit.x - newX, prevState.onDropWidth),
+                h: this.calculateDimension(limit.y - newY, prevState.onDropHeight),
                 inToolbox: false,
             };
             // Update the layout array for the current breakpoint
@@ -137,9 +139,14 @@ class ToolBoxGrid extends Component {
             };
 
             // Return the updated state
-            return {
+            let newState = {
+                ...prevState,
                 layouts: updatedLayouts,
             };
+
+            console.log('onDrop', newState);
+
+            return newState;
         });
     };
 
@@ -148,6 +155,7 @@ class ToolBoxGrid extends Component {
      * It will enable us to store different configurations for sizes
      */
     handleBreakpointChange = (breakpoint) => {
+        console.log('handleBreakpointChange', breakpoint)
         this.setState((prevState) => {
             return {
                 currentBreakpoint: breakpoint,
@@ -162,16 +170,16 @@ class ToolBoxGrid extends Component {
         });
     };
 
-    handleLayoutChange = (current_layout, all_layouts) => {
-        // First we save the layout to the local storage
-        if (this.state.save) {
-            all_layouts = appendInToolboxFalse(all_layouts);
-            saveToLocalStorage(`${this.state.id}-layouts`, all_layouts);
-        }
-        // Set the state of the layout for render
-        this.setState({all_layouts});
-        this.setState({all_layouts});
-    };
+    // handleLayoutChange = (current_layout, all_layouts) => {
+    //     console.log('handleLayoutChange', current_layout, all_layouts)
+    //     // First we save the layout to the local storage
+    //     if (this.state.save) {
+    //         all_layouts = appendInToolboxFalse(all_layouts);
+    //         saveToLocalStorage(`${this.state.id}-layouts`, all_layouts);
+    //     }
+    //     // Set the state of the layout for render
+    //     this.setState({ all_layouts });
+    // };
 
     /**
      * Handle the close button on a grid layout item being clicked - this should
@@ -179,28 +187,29 @@ class ToolBoxGrid extends Component {
      * @param {Object} item 
      */
     handleCloseItemClicked = (item) => {
-       this.setState((prevState) => {
+        console.log('handleCloseItemClicked', item)
+        this.setState((prevState) => {
             const currentBreakpoint = prevState.currentBreakpoint;
             const currentToolbox = prevState.toolbox;
             const currentLayout = prevState.layouts;
 
-                // Find the item in the currentLayout at currentBreakpoint
-                const layoutIndex = currentLayout[currentBreakpoint].findIndex(
-                    (layoutItem) => layoutItem.i === item
-                );
+            // Find the item in the currentLayout at currentBreakpoint
+            const layoutIndex = currentLayout[currentBreakpoint].findIndex(
+                (layoutItem) => layoutItem.i === item
+            );
 
-                // If the item is found, remove it from currentLayout and store it
-                let toToolbox = null;
-                if (layoutIndex !== -1) {
-                    toToolbox = currentLayout[currentBreakpoint][layoutIndex];
-                    currentLayout[currentBreakpoint].splice(layoutIndex, 1);
-                }
+            // If the item is found, remove it from currentLayout and store it
+            let toToolbox = null;
+            if (layoutIndex !== -1) {
+                toToolbox = currentLayout[currentBreakpoint][layoutIndex];
+                currentLayout[currentBreakpoint].splice(layoutIndex, 1);
+            }
 
-                // Append the toToolbox item to the currentToolbox at the right breakpoint
-                const updatedToolbox = [
-                    ...currentToolbox[currentBreakpoint],
-                    toToolbox,
-                ];
+            // Append the toToolbox item to the currentToolbox at the right breakpoint
+            const updatedToolbox = [
+                ...currentToolbox[currentBreakpoint],
+                toToolbox,
+            ];
 
             // Update the state of layout and toolbox to render the content
             return {
@@ -211,12 +220,12 @@ class ToolBoxGrid extends Component {
                 },
             };
         },
-        () => {});
+            () => { });
     }
 
     handleResizeItemStart(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
-            let newState = {...prev};
+            let newState = { ...prev };
             newState.activeWindows[oldItem.i] = true;
             return newState;
         })
@@ -224,7 +233,7 @@ class ToolBoxGrid extends Component {
 
     handleResizeItemStop(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
-            let newState = {...prev};
+            let newState = { ...prev };
             newState.activeWindows[oldItem.i] = false;
             return newState;
         })
@@ -232,7 +241,7 @@ class ToolBoxGrid extends Component {
 
     handleDragItemStart(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
-            let newState = {...prev};
+            let newState = { ...prev };
             newState.activeWindows[oldItem.i] = true;
             return newState;
         })
@@ -240,256 +249,275 @@ class ToolBoxGrid extends Component {
 
     handleDragItemStop(layout, oldItem, newItem, placeholder, e, element) {
         this.setState(prev => {
-            let newState = {...prev};
+            let newState = { ...prev };
             newState.activeWindows[oldItem.i] = false;
             return newState;
         })
     }
 
     calculateInitialLayout() {
-        let {children = []} = this.props;
+        try {
+            let { children = [] } = this.props;
+            const {
+                id,
+                layouts: providedLayouts,
+                clearSavedLayout,
+                ncols = NCOLS_RESPONSIVE,
+                nrows = NROWS,
+                breakpoints = BREAKPOINTS,
+                gridCols = GRID_COLS_RESPONSIVE,
+                toolbox,
+                currentBreakpoint,
+                defaultInToolbox: inToolbox
+            } = this.props;
 
-        const {
-            id,
-            layouts: providedLayouts,
-            clearSavedLayout,
-            ncols = NCOLS_RESPONSIVE,
-            nrows = NROWS,
-            breakpoints = BREAKPOINTS,
-            gridCols = GRID_COLS_RESPONSIVE,
-            toolbox = toolbox,
-            currentBreakpoint = currentBreakpoint,
-            defaultInToolbox = inToolbox
-        } = this.props;
-        
-        const layouts = {};
-        let child_props, child_id, isDashboardItem;
+            children = Array.isArray(children) ? children : [children];
 
-        children = Array.isArray(children) ? children : [children];
+            if (clearSavedLayout) {
+                saveToLocalStorage(`${id}-layouts`, null);
+            }
 
-        if (clearSavedLayout) {
-            saveToLocalStorage(`${id}-layouts`, null);
-        }
+            // Build layout on inital start
+            //   Priority to client local store [except if specified]
+            //   Then layout
+            //   And then DashboardItem [except if specified])
+            const savedLayout = getFromLocalStorage(`${id}-layouts`);
 
-        // Build layout on inital start
-        //   Priority to client local store [except if specified]
-        //   Then layout
-        //   And then DashboardItem [except if specified])
-        const savedLayout = getFromLocalStorage(`${id}-layouts`);
+            const layouts = {};
+            let childProps, childId, isDashboardItem;
 
-        for (var bkp in breakpoints) {
-            
-            // eslint-disable-next-line no-loop-func
-            const layout = children.map((child, key) => {
-                let item_layout;
-                
-                // Get the child id and props
-                // Depending on wether it is a string, a classic React component, or a DashboardItem
-                if (typeof child === 'string') {
-                    child_id = key.toString();
-                } else {
-                    child_props = child.props._dashprivate_layout
-                        ? child.props._dashprivate_layout.props
-                        : child.props;
+            for (var bkp in breakpoints) {
+                // eslint-disable-next-line no-loop-func
+                const layout = children.map((child, key) => {
+                    let item_layout;
 
-                    isDashboardItem =
-                        (child.props._dashprivate_layout
-                            ? child.props._dashprivate_layout.type
-                            : child.type.name) === 'DashboardItemResponsive';
+                    // Get the child id and props
+                    // Depending on wether it is a string, a classic React component, or a DashboardItem
+                    if (typeof child === 'string') {
+                        childId = key.toString();
+                    } else {
+                        childProps = child.props._dashprivate_layout
+                            ? child.props._dashprivate_layout.props
+                            : child.props;
 
-                    child_id = child_props.id;
+                        isDashboardItem =
+                            (child.props._dashprivate_layout
+                                ? child.props._dashprivate_layout.type
+                                : child.type.name) === 'DashboardItemResponsive';
 
-                    if (typeof child_id === 'undefined') {
-                        child_id = key.toString();
-                    } else if (typeof child_id === 'object') {
-                        child_id = JSON.stringify(child_id);
+                        childId = childProps.id;
+
+                        if (typeof childId === 'undefined') {
+                            childId = key.toString();
+                        } else if (typeof childId === 'object') {
+                            childId = JSON.stringify(childId);
+                        }
                     }
-                }
 
-                // Define the layout for the specific item x breakpoint
-                if (savedLayout && savedLayout[bkp]) {
+                    // Define the layout for the specific item / breakpoint
+
                     // First we check if we find the child in the saved layouts
-                    item_layout = savedLayout[bkp].find(
-                        (el) => el.i === child_id || el.i === key.toString()
-                    );
-                }
-                if (!item_layout && providedLayouts && providedLayouts[bkp]) {
+                    if (savedLayout && savedLayout[bkp]) {
+                        item_layout = savedLayout[bkp].find(
+                            (el) => el.i === childId || el.i === key.toString()
+                        );
+                    }
+
                     // Now we check if the child is in the provided layouts
-                    item_layout = providedLayouts[bkp].find(
-                        (el) => el.i === child_id
-                    );
-                }
+                    if (!item_layout && providedLayouts && providedLayouts[bkp]) {
+                        item_layout = providedLayouts[bkp].find(
+                            (el) => el.i === childId
+                        );
+                    }
 
-                if (!item_layout && isDashboardItem) {
-                    // If we still not have the child, then we make it as long as its a DashboardItem
+                    // If we still do not have the child, then we make it as long as its a DashboardItem
                     // The layout of a stored toolbox item will be missing if we have a saved layout.
-                    // Therfore put it into toolbox
+                    // Therefore put it into toolbox
+                    if (!item_layout && isDashboardItem) {
+                        // The default value for inToolbox is false. This triggers if nothing is provided
+                        let defaultToolbox = !!savedLayout;
 
-                    // The default value for inToolbox is false. This triggers if nothing is provided
-                    let defaultToolbox = savedLayout;
-  
-                    const {
-                        id = {},
-                        x = {},
-                        y = {},
-                        w = {},
-                        h = {},
-                        inToolbox = inToolbox,
-                    } = child_props;
+                        const {
+                            id = {},
+                            x = {},
+                            y = {},
+                            w = {},
+                            h = {},
+                            inToolbox = inToolbox,
+                        } = childProps;
 
-                    const item_provided_layout = {
-                        i: typeof id === 'string' ? id : id[bkp],
-                        x: typeof x === 'number' ? x : x[bkp],
-                        y: typeof y === 'number' ? y : y[bkp],
-                        w: typeof w === 'number' ? w : w[bkp],
-                        h: typeof h === 'number' ? h : h[bkp],
-                        inToolbox: savedLayout ? defaultToolbox : inToolbox,
-                    };
+                        const item_provided_layout = {
+                            i: typeof id === 'string' ? id : id[bkp],
+                            x: typeof x === 'number' ? x : x[bkp],
+                            y: typeof y === 'number' ? y : y[bkp],
+                            w: typeof w === 'number' ? w : w[bkp],
+                            h: typeof h === 'number' ? h : h[bkp],
+                            inToolbox: savedLayout ? defaultToolbox : inToolbox,
+                        };
 
-                    item_layout = defaultItemLayout(
-                        item_provided_layout,
-                        child_id,
-                        key,
-                        ncols[bkp],
-                        nrows,
-                        nrows,
-                        gridCols[bkp],
-                        inToolbox
-                    );
-                }
+                        item_layout = defaultItemLayout(
+                            item_provided_layout,
+                            childId,
+                            key,
+                            ncols[bkp],
+                            nrows,
+                            nrows,
+                            gridCols[bkp],
+                            inToolbox
+                        );
+                    }
 
-                if (!item_layout) {
-                    item_layout = defaultItemLayout(
-                        {},
-                        child_id,
-                        key,
-                        ncols[bkp],
-                        nrows,
-                        nrows,
-                        gridCols[bkp],
-                        inToolbox
-                    );
-                }
-                return item_layout;
-            });
+                    if (!item_layout) {
+                        item_layout = defaultItemLayout(
+                            {},
+                            childId,
+                            key,
+                            ncols[bkp],
+                            nrows,
+                            nrows,
+                            gridCols[bkp],
+                            inToolbox
+                        );
+                    }
+                    return item_layout;
+                });
 
-            layouts[bkp] = layout;
+                layouts[bkp] = layout;
+            }
+
+            let { filteredLayout, toolboxLayout } =
+                filterLayoutForToolboxItems(layouts);
+
+            return { layouts: filteredLayout, toolbox: toolboxLayout, currentBreakpoint };
+        } catch (e) {
+            console.log('Ex 3', e)
         }
-
-        let {filteredLayout, toolboxLayout} =
-            filterLayoutForToolboxItems(layouts);
-
-        return {layout: filteredLayout, toolbox: toolboxLayout, currentBreakpoint};
     }
 
     componentDidMount() {
-        let {layout, toolbox, currentBreakpoint} = this.calculateInitialLayout();
+        
+        let { layouts, toolbox, currentBreakpoint } = this.calculateInitialLayout();
 
-        this.setState((prevState) => ({
-            layouts: layout,
-            toolbox: toolbox,
-            currentBreakpoint: currentBreakpoint,
-        }));
+        this.setState((prevState) => {
+            let newState = {
+                ...prevState,
+                layouts: layouts,
+                toolbox: toolbox,
+                currentBreakpoint: currentBreakpoint,
+            };
+
+            console.log('componentDidMount', newState)
+
+            return newState;
+        });
+
+        console.log('componentDidMount', this.state)
     }
 
     render() {
-        let {children = [], toolboxTitle, toolboxComponent} = this.props;
 
-        const {
-            breakpoints = BREAKPOINTS,
-            gridCols = GRID_COLS_RESPONSIVE,
-            height = ROW_HEIGHT,
-            className,
-            style,
-        } = this.props;
+        try {
+            let { children = [], toolboxTitle, toolboxComponent } = this.props;
+            console.log('render', this.state, 'children', children)
 
-        children = Array.isArray(children) ? children : [children];
+            const {
+                breakpoints = BREAKPOINTS,
+                gridCols = GRID_COLS_RESPONSIVE,
+                height = ROW_HEIGHT,
+                className,
+                style,
+            } = this.props;
 
-        let {layoutContent: gridContent, toolboxContent} = categorizeContent(
-            children,
-            this.state.layouts,
-            this.state.currentBreakpoint
-        );
+            children = Array.isArray(children) ? children : [children];
 
-        gridContent = Array.isArray(gridContent) ? gridContent : [gridContent];
-        
-        toolboxContent = Array.isArray(toolboxContent)
-            ? toolboxContent
-            : [toolboxContent];
-        return (
-            <React.Fragment>
-                <ToolBox
-                    breakpoint={breakpoints}
-                    layouts={this.state.toolbox}
-                    toolboxTitle={toolboxTitle}
-                    toolboxComponent={toolboxComponent}
-                    toolboxItems={toolboxContent}
-                />
+            let {layoutContent: gridContent, toolboxContent} = categorizeContent(
+                children,
+                this.state.layouts,
+                this.state.currentBreakpoint
+            );
 
-                <ResponsiveReactGridLayout
-                    className={className}
-                    style={style}
-                    layouts={this.state.layouts}
-                    cols={gridCols}
-                    onBreakpointChange={this.handleBreakpointChange}
-                    breakpoints={breakpoints}
-                    rowHeight={height}
-                    onDrop={this.handleDrop}
-                    onLayoutChange={this.handleLayoutChange}
-                    onResizeStart={this.handleResizeItemStart}
-                    onResizeStop={this.handleResizeItemStop}
-                    onDragStart={this.handleDragItemStart}
-                    onDragStop={this.handleDragItemStop}
-                    {...this.props}
-                >
-                    {gridContent.map((child, key) => {
-                        let _key;
-                        let _data_grid;
-                        if (child.props) {
-                            const child_props = child.props._dashprivate_layout
-                                ? child.props._dashprivate_layout.props
-                                : child.props;
+            gridContent = Array.isArray(gridContent) ? gridContent : [gridContent];
 
-                            const isDashboardItem =
-                                (child.props._dashprivate_layout
-                                    ? child.props._dashprivate_layout.type
-                                    : child.type.name) ===
-                                'DashboardItemResponsive';
+            toolboxContent = Array.isArray(toolboxContent)
+                ? toolboxContent
+                : [toolboxContent];
+            return (
+                <React.Fragment>
+                    <ToolBox
+                        breakpoint={breakpoints}
+                        layouts={this.state.toolbox}
+                        toolboxTitle={toolboxTitle}
+                        toolboxComponent={toolboxComponent}
+                        toolboxItems={toolboxContent}
+                    />
 
-                            _key = child_props.id || key.toString();
+                    <ResponsiveReactGridLayout
+                        className={className}
+                        style={style}
+                        layouts={this.state.layouts}
+                        cols={gridCols}
+                        onBreakpointChange={this.handleBreakpointChange}
+                        breakpoints={breakpoints}
+                        rowHeight={height}
+                        onDrop={this.handleDrop}
+                        onLayoutChange={this.handleLayoutChange}
+                        onResizeStart={this.handleResizeItemStart}
+                        onResizeStop={this.handleResizeItemStop}
+                        onDragStart={this.handleDragItemStart}
+                        onDragStop={this.handleDragItemStop}
+                        {...this.props}
+                    >
+                        {gridContent.map((child, key) => {
+                            let _key;
+                            let _data_grid;
+                            if (child.props) {
+                                const child_props = child.props._dashprivate_layout
+                                    ? child.props._dashprivate_layout.props
+                                    : child.props;
 
-                            if (isDashboardItem) {
-                                const {
-                                    x = {},
-                                    y = {},
-                                    w = {},
-                                    h = {},
-                                } = child_props;
+                                const isDashboardItem =
+                                    (child.props._dashprivate_layout
+                                        ? child.props._dashprivate_layout.type
+                                        : child.type.name) ===
+                                    'DashboardItemResponsive';
 
-                                _data_grid = {x: x, y: y, w: w, h: h};
+                                _key = child_props.id || key.toString();
+
+                                if (isDashboardItem) {
+                                    const {
+                                        x = {},
+                                        y = {},
+                                        w = {},
+                                        h = {},
+                                    } = child_props;
+
+                                    _data_grid = { x: x, y: y, w: w, h: h };
+                                }
+
+                                if (typeof _key === 'object') {
+                                    _key = JSON.stringify(_key);
+                                }
+                            } else {
+                                _key = key.toString();
                             }
 
-                            if (typeof _key === 'object') {
-                                _key = JSON.stringify(_key);
-                            }
-                        } else {
-                            _key = key.toString();
-                        }
-
-                        return (
-                            <GridItem
-                                key={_key}
-                                className={"item"}
-                                data-grid={_data_grid}
-                                canClose={true}
-                                onCloseClicked={() => this.handleCloseItemClicked(_key)}
-                                active={this.state.activeWindows[_key] || false}
-                            >{child}</GridItem>
-                        );
-                    })}
-                </ResponsiveReactGridLayout>
-            </React.Fragment>
-        );
+                            return (
+                                <GridItem
+                                    key={_key}
+                                    className={"item"}
+                                    data-grid={_data_grid}
+                                    canClose={true}
+                                    onCloseClicked={() => this.handleCloseItemClicked(_key)}
+                                    active={this.state.activeWindows[_key] || false}
+                                >{child}</GridItem>
+                            );
+                        })}
+                    </ResponsiveReactGridLayout>
+                </React.Fragment>
+            );
+        } catch (e) {
+            console.log('Ex 5', e)
+        }
     }
 }
 
@@ -522,7 +550,7 @@ ToolBoxGrid.defaultProps = {
     preventCollision: false,
     isDroppable: true,
     resizeHandles: ['se'],
-    toolbox: {lg: [], md: [], sm: []},
+    toolbox: { lg: [], md: [], sm: [] },
     currentBreakpoint: 'lg',
     onDropHeight: 5,
     onDropWidth: 4,
@@ -672,12 +700,12 @@ ToolBoxGrid.propTypes = {
      * Are items draggable
      */
     isDraggable: PropTypes.bool,
-    
+
     /**
      * Are items resizable
      */
     isResizable: PropTypes.bool,
-    
+
     /**
      * Are items resizable
      */
@@ -688,7 +716,7 @@ ToolBoxGrid.propTypes = {
      * This makes about 6x faster paint performance
      */
     useCSSTransforms: PropTypes.bool,
-    
+
     /**
      * If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
      * we should set scale coefficient to avoid render artefacts while dragging.

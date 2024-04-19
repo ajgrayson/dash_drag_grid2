@@ -16,6 +16,7 @@ Keyword arguments:
 - `id` (String | Dict; optional): The ID used to identify this component in Dash callbacks.
 - `defaultName` (String; optional): The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID
 - `h` (Real | Dict; optional): The height on the of y axis (default is 4)
+- `iconComponent` (a list of or a singular dash component, string or number; optional): Pass in a react component as a prop to be rendered as the contents of the toolbox item
 - `inToolbox` (Bool; optional): Is the Item in the toolbox. Default is false and set by the grid. Overwrites the grid default value
 - `isBounded` (Bool; optional): Is is bounded
 - `isDashboardItem` (Bool; optional): This is an internal prop used to identify the component, this property default value is True.
@@ -34,7 +35,7 @@ Setting this value to false is equivalent to not using the DashboardItem wrapper
 - `y` (Real | Dict; optional): The position on the y axis (the unit is 30px, by default)
 """
 function dashboarditemresponsive(; kwargs...)
-        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :w, :x, :y]
+        available_props = Symbol[:children, :id, :defaultName, :h, :iconComponent, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :w, :x, :y]
         wild_props = Symbol[]
         return Component("dashboarditemresponsive", "DashboardItemResponsive", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

@@ -9,6 +9,7 @@ include("jl/dashboarditemresponsive.jl")
 include("jl/responsivegridlayout.jl")
 include("jl/toolbox.jl")
 include("jl/toolboxgrid.jl")
+include("jl/toolboxgrid2.jl")
 
 function __init__()
     DashBase.register_package(

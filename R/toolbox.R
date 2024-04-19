@@ -1,9 +1,9 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
 #' @export
-toolBox <- function(breakpoints=NULL, layouts=NULL, toolboxComponent=NULL, toolboxItems=NULL, toolboxTitle=NULL) {
+toolBox <- function(breakpoints=NULL, component=NULL, items=NULL, layouts=NULL, title=NULL) {
     
-    props <- list(breakpoints=breakpoints, layouts=layouts, toolboxComponent=toolboxComponent, toolboxItems=toolboxItems, toolboxTitle=toolboxTitle)
+    props <- list(breakpoints=breakpoints, component=component, items=items, layouts=layouts, title=title)
     if (length(props) > 0) {
         props <- props[!vapply(props, is.null, logical(1))]
     }
@@ -11,7 +11,7 @@ toolBox <- function(breakpoints=NULL, layouts=NULL, toolboxComponent=NULL, toolb
         props = props,
         type = 'ToolBox',
         namespace = 'dash_drag_grid',
-        propNames = c('breakpoints', 'layouts', 'toolboxComponent', 'toolboxItems', 'toolboxTitle'),
+        propNames = c('breakpoints', 'component', 'items', 'layouts', 'title'),
         package = 'dashDragGrid'
         )
 

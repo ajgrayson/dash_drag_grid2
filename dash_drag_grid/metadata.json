@@ -218,6 +218,13 @@
         },
         "required": false,
         "description": "The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID"
+      },
+      "iconComponent": {
+        "type": {
+          "name": "node"
+        },
+        "required": false,
+        "description": "Pass in a react component as a prop to be rendered as the contents of the toolbox item"
       }
     }
   },
@@ -625,14 +632,14 @@
     "displayName": "ToolBox",
     "methods": [],
     "props": {
-      "toolboxItems": {
+      "items": {
         "type": {
           "name": "array"
         },
         "required": true,
         "description": ""
       },
-      "toolboxTitle": {
+      "title": {
         "type": {
           "name": "string"
         },
@@ -643,7 +650,7 @@
           "computed": false
         }
       },
-      "toolboxComponent": {
+      "component": {
         "type": {
           "name": "func"
         },
@@ -721,22 +728,6 @@
         ],
         "returns": null,
         "description": "We need to capture the changes in break point to find it for the right toolbox. \nIt will enable us to store different configurations for sizes"
-      },
-      {
-        "name": "handleLayoutChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "current_layout",
-            "type": null
-          },
-          {
-            "name": "all_layouts",
-            "type": null
-          }
-        ],
-        "returns": null
       },
       {
         "name": "handleCloseItemClicked",
@@ -1269,7 +1260,439 @@
         "required": false,
         "description": "The toolbox layout",
         "defaultValue": {
-          "value": "{lg: [], md: [], sm: []}",
+          "value": "{ lg: [], md: [], sm: [] }",
+          "computed": false
+        }
+      },
+      "currentBreakpoint": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "current breakpoint",
+        "defaultValue": {
+          "value": "'lg'",
+          "computed": false
+        }
+      },
+      "onDropHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Set the default height of items that are dropped from the toolbox into the grid. default is 5",
+        "defaultValue": {
+          "value": "5",
+          "computed": false
+        }
+      },
+      "onDropWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Set the default height of items that are dropped from the toolbox into the grid. default is 4",
+        "defaultValue": {
+          "value": "4",
+          "computed": false
+        }
+      },
+      "defaultInToolbox": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src/lib/components/ToolBoxGrid2.react.js": {
+    "description": "",
+    "displayName": "ToolBoxGrid2",
+    "methods": [],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "(string) The ID used to identify this component in Dash callbacks.\nThe id is also used to automatically save the layout on client side."
+      },
+      "layouts": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Layout is a list(python)/vector(R) of dictionnary(Python)/list(R) with the format:\n{x: number, y: number, w: number, h: number}\nThe index into the layout must match the id used on each item component with DashboardItem.\nIf you choose to use custom keys, you can specify that key in the layout\narray objects like so:\n{i: string, x: number, y: number, w: number, h: number}\nThe ID used to identify this component in Dash callbacks.\nThe id is also used to automatically save the layout on client side."
+      },
+      "breakpoints": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "({breakpoint: number}) The breakpoints for the responsive layout.\nFor each screen size (breakpoint) we can define a different layout.\n(see also 'layouts' and 'gridCols' arguments)\nDefault value is {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}"
+      },
+      "gridCols": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "({breakpoint: number}) the number of columns in the grid layout.\nDefault value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}."
+      },
+      "toolboxTitle": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "(string) The title above the toolbox."
+      },
+      "toolboxComponent": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "(React.Component) The custom component to render the toolbox item"
+      },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "node"
+              }
+            },
+            {
+              "name": "node"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Children is a list of the items (dash Components and/or\nDashboardItem) to diplay on the layout.\nBy default all the items can be dragged and resized.",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "save": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "(bool) If True, then the layout is automatically saved on client browser.\nDefault value is True",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "clearSavedLayout": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "(bool) If set to true, the position of elements saved on client side\nwill be cleared on the next page load.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "ncols": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "({breakpoint: number}) the default number of columns by item.\nDefault value is {lg: 6, md: 5, sm: 3, xs: 4, xxs: 2}."
+      },
+      "nrows": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "(number) the default number of row by item.\nDefault value is 8."
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "(number) height of a row (in px).\nDefault value is 30."
+      },
+      "className": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "(string) class passed to the react-grid-layout component",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "(dict) css style passed to the react-grid-layout component",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "autoSize": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "(bool) Other props defined by react-grid-layout\nIf true, the container height swells and contracts to fit contents",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "draggableCancel": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "(string) A CSS selector for tags that will not be draggable.\nor example: draggableCancel:'.MyNonDraggableAreaClassName'\nIf you forget the leading . it will not work.",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "draggableHandle": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "A CSS selector for tags that will act as the draggable handle.\nFor example: draggableHandle:'.MyDragHandleClassName'\nIf you forget the leading . it will not work.",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "verticalCompact": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If true, the layout will compact vertically",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "compactType": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "'vertical'",
+              "computed": false
+            },
+            {
+              "value": "'horizontal'",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "Compaction type.",
+        "defaultValue": {
+          "value": "'vertical'",
+          "computed": false
+        }
+      },
+      "margin": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "number"
+              }
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Margin between items [x, y] in px.",
+        "defaultValue": {
+          "value": "[10, 10]",
+          "computed": false
+        }
+      },
+      "containerPadding": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "number"
+              }
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Padding inside the container [x, y] in px",
+        "defaultValue": {
+          "value": "[10, 10]",
+          "computed": false
+        }
+      },
+      "isDraggable": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Are items draggable",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "isResizable": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Are items resizable",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "isBounded": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Are items resizable",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "useCSSTransforms": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Uses CSS3 translate() instead of position top/left.\nThis makes about 6x faster paint performance",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "transformScale": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has \"transform: scale(n)\" css property,\nwe should set scale coefficient to avoid render artefacts while dragging.",
+        "defaultValue": {
+          "value": "1",
+          "computed": false
+        }
+      },
+      "preventCollision": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If true, grid items won't change position when being\ndragged over.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "isDroppable": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If true, droppable elements (with `draggable={true}` attribute)\ncan be dropped on the grid. It triggers \"onDrop\" callback\nwith position and event object as parameters.\nIt can be useful for dropping an element in a specific position\n\nNOTE: In case of using Firefox you should add\n`onDragStart={e => e.dataTransfer.setData('text/plain', '')}` attribute\nalong with `draggable={true}` otherwise this feature will work incorrect.\nonDragStart attribute is required for Firefox for a dragging initialization\n\n@see https://bugzilla.mozilla.org/show_bug.cgi?id=568313",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "resizeHandles": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "enum",
+            "value": [
+              {
+                "value": "'s'",
+                "computed": false
+              },
+              {
+                "value": "'w'",
+                "computed": false
+              },
+              {
+                "value": "'e'",
+                "computed": false
+              },
+              {
+                "value": "'n'",
+                "computed": false
+              },
+              {
+                "value": "'sw'",
+                "computed": false
+              },
+              {
+                "value": "'nw'",
+                "computed": false
+              },
+              {
+                "value": "'se'",
+                "computed": false
+              },
+              {
+                "value": "'ne'",
+                "computed": false
+              }
+            ]
+          }
+        },
+        "required": false,
+        "description": "Defines which resize handles should be rendered\nAllows for any combination of:\n's' - South handle (bottom-center)\n'w' - West handle (left-center)\n'e' - East handle (right-center)\n'n' - North handle (top-center)\n'sw' - Southwest handle (bottom-left)\n'nw' - Northwest handle (top-left)\n'se' - Southeast handle (bottom-right)\n'ne' - Northeast handle (top-right)",
+        "defaultValue": {
+          "value": "['se']",
+          "computed": false
+        }
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called to report property changes\nto Dash, to make them available for callbacks."
+      },
+      "toolbox": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The toolbox layout",
+        "defaultValue": {
+          "value": "{ lg: [], md: [], sm: [] }",
           "computed": false
         }
       },

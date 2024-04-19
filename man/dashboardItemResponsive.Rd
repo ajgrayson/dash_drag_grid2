@@ -11,10 +11,10 @@ DashboardItemResponsive is a wrapper that is intended to be used with Responsive
 
 \usage{
 dashboardItemResponsive(children=NULL, id=NULL, defaultName=NULL, h=NULL,
-inToolbox=NULL, isBounded=NULL, isDashboardItem=NULL,
-isDraggable=NULL, isResizable=NULL, maxH=NULL, maxW=NULL,
-minH=NULL, minW=NULL, moved=NULL, resizeHandles=NULL,
-static=NULL, w=NULL, x=NULL, y=NULL)
+iconComponent=NULL, inToolbox=NULL, isBounded=NULL,
+isDashboardItem=NULL, isDraggable=NULL, isResizable=NULL,
+maxH=NULL, maxW=NULL, minH=NULL, minW=NULL, moved=NULL,
+resizeHandles=NULL, static=NULL, w=NULL, x=NULL, y=NULL)
 }
 
 \arguments{
@@ -25,6 +25,8 @@ static=NULL, w=NULL, x=NULL, y=NULL)
 \item{defaultName}{Character. The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID}
 
 \item{h}{Numeric | named list. The height on the of y axis (default is 4)}
+
+\item{iconComponent}{A list of or a singular dash component, string or number. Pass in a react component as a prop to be rendered as the contents of the toolbox item}
 
 \item{inToolbox}{Logical. Is the Item in the toolbox. Default is false and set by the grid. Overwrites the grid default value}
 

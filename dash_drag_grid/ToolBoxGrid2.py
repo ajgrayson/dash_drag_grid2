@@ -3,20 +3,9 @@
 from dash.development.base_component import Component, _explicitize_args
 
 
-class ToolBoxGrid(Component):
-    """A ToolBoxGrid component.
-DraggableDashboard is a component for building
-dashboards with draggable and resizable items.
-It takes a list of children and display them in
-div elements that can be moved around the page.
-The initial size of each element can either be
-defined with the layout argument or by wrapping
-each element with the DashboardItem component.
-By default, DraggableDashboard will saved the
-position of the elements on client side, when
-moved on the page. But you can also save it
-on server side by defining a callback with :
-`Input("<my-id>", "layout")`.
+class ToolBoxGrid2(Component):
+    """A ToolBoxGrid2 component.
+
 
 Keyword arguments:
 
@@ -164,7 +153,7 @@ Keyword arguments:
     _children_props = []
     _base_nodes = ['children']
     _namespace = 'dash_drag_grid'
-    _type = 'ToolBoxGrid'
+    _type = 'ToolBoxGrid2'
     @_explicitize_args
     def __init__(self, children=None, id=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, gridCols=Component.UNDEFINED, toolboxTitle=Component.UNDEFINED, toolboxComponent=Component.UNDEFINED, save=Component.UNDEFINED, clearSavedLayout=Component.UNDEFINED, ncols=Component.UNDEFINED, nrows=Component.UNDEFINED, height=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, autoSize=Component.UNDEFINED, draggableCancel=Component.UNDEFINED, draggableHandle=Component.UNDEFINED, verticalCompact=Component.UNDEFINED, compactType=Component.UNDEFINED, margin=Component.UNDEFINED, containerPadding=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, useCSSTransforms=Component.UNDEFINED, transformScale=Component.UNDEFINED, preventCollision=Component.UNDEFINED, isDroppable=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, toolbox=Component.UNDEFINED, currentBreakpoint=Component.UNDEFINED, onDropHeight=Component.UNDEFINED, onDropWidth=Component.UNDEFINED, defaultInToolbox=Component.UNDEFINED, **kwargs):
         self._prop_names = ['children', 'id', 'autoSize', 'breakpoints', 'className', 'clearSavedLayout', 'compactType', 'containerPadding', 'currentBreakpoint', 'defaultInToolbox', 'draggableCancel', 'draggableHandle', 'gridCols', 'height', 'isBounded', 'isDraggable', 'isDroppable', 'isResizable', 'layouts', 'margin', 'ncols', 'nrows', 'onDropHeight', 'onDropWidth', 'preventCollision', 'resizeHandles', 'save', 'style', 'toolbox', 'toolboxTitle', 'transformScale', 'useCSSTransforms', 'verticalCompact']
@@ -176,4 +165,4 @@ Keyword arguments:
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args if k != 'children'}
 
-        super(ToolBoxGrid, self).__init__(children=children, **args)
+        super(ToolBoxGrid2, self).__init__(children=children, **args)

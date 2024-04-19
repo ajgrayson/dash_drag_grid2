@@ -10,20 +10,20 @@
 }
 
 \usage{
-toolBox(breakpoints=NULL, layouts=NULL, toolboxComponent=NULL,
-toolboxItems=NULL, toolboxTitle=NULL)
+toolBox(breakpoints=NULL, component=NULL, items=NULL, layouts=NULL,
+title=NULL)
 }
 
 \arguments{
 \item{breakpoints}{Named list. }
 
+\item{component}{}
+
+\item{items}{Unnamed list. }
+
 \item{layouts}{Named list. }
 
-\item{toolboxComponent}{}
-
-\item{toolboxItems}{Unnamed list. }
-
-\item{toolboxTitle}{Character. }
+\item{title}{Character. }
 }
 
 \value{named list of JSON elements corresponding to React.js properties and their values}

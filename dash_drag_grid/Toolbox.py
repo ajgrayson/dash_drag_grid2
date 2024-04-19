@@ -11,27 +11,27 @@ Keyword arguments:
 
 - breakpoints (dict; optional)
 
+- items (list; required)
+
 - layouts (dict; optional)
 
-- toolboxItems (list; required)
-
-- toolboxTitle (string; default "Toolbox")"""
+- title (string; default "Toolbox")"""
     _children_props = []
     _base_nodes = ['children']
     _namespace = 'dash_drag_grid'
     _type = 'ToolBox'
     @_explicitize_args
-    def __init__(self, toolboxItems=Component.REQUIRED, toolboxTitle=Component.UNDEFINED, toolboxComponent=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['breakpoints', 'layouts', 'toolboxItems', 'toolboxTitle']
+    def __init__(self, items=Component.REQUIRED, title=Component.UNDEFINED, component=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['breakpoints', 'items', 'layouts', 'title']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['breakpoints', 'layouts', 'toolboxItems', 'toolboxTitle']
+        self.available_properties = ['breakpoints', 'items', 'layouts', 'title']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        for k in ['toolboxItems']:
+        for k in ['items']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

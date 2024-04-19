@@ -30,7 +30,7 @@ export const filterLayoutForToolboxItems = (layoutDict) => {
 export const categorizeContent = (children, layoutDict, currentBreakpoint) => {
     const toolboxContent = [];
     const layoutContent = children.reduce((acc, child) => {
-        const childId = child.props._dashprivate_layout.props.id;
+        const childId = child.props._dashprivate_layout && child.props._dashprivate_layout.props.id;
         const isInLayout = layoutDict[currentBreakpoint]?.some(item => item.i === childId);
 
         isInLayout ? acc.layout.push(child) : toolboxContent.push(child);

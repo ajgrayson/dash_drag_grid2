@@ -23,6 +23,10 @@ Keyword arguments:
 - h (number | dict; default NROWS):
     The height on the of y axis (default is 4).
 
+- iconComponent (a list of or a singular dash component, string or number; optional):
+    Pass in a react component as a prop to be rendered as the contents
+    of the toolbox item.
+
 - inToolbox (boolean; default False):
     Is the Item in the toolbox. Default is False and set by the grid.
     Overwrites the grid default value.
@@ -71,15 +75,15 @@ Keyword arguments:
 
 - y (number | dict; default 0):
     The position on the y axis (the unit is 30px, by default)."""
-    _children_props = []
-    _base_nodes = ['children']
+    _children_props = ['iconComponent']
+    _base_nodes = ['iconComponent', 'children']
     _namespace = 'dash_drag_grid'
     _type = 'DashboardItemResponsive'
     @_explicitize_args
-    def __init__(self, children=None, id=Component.UNDEFINED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, static=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, maxH=Component.UNDEFINED, maxW=Component.UNDEFINED, minH=Component.UNDEFINED, minW=Component.UNDEFINED, moved=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, isDashboardItem=Component.UNDEFINED, inToolbox=Component.UNDEFINED, defaultName=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'w', 'x', 'y']
+    def __init__(self, children=None, id=Component.UNDEFINED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, static=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, maxH=Component.UNDEFINED, maxW=Component.UNDEFINED, minH=Component.UNDEFINED, minW=Component.UNDEFINED, moved=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, isDashboardItem=Component.UNDEFINED, inToolbox=Component.UNDEFINED, defaultName=Component.UNDEFINED, iconComponent=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'defaultName', 'h', 'iconComponent', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'w', 'x', 'y']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'w', 'x', 'y']
+        self.available_properties = ['children', 'id', 'defaultName', 'h', 'iconComponent', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'w', 'x', 'y']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
