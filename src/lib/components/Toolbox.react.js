@@ -4,6 +4,8 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './style.css';
 
+import {renderDashComponent} from 'dash-extensions-js'
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export const Toolbox = ({toolboxContent, layouts, breakpoints}) => {
@@ -29,9 +31,10 @@ export const Toolbox = ({toolboxContent, layouts, breakpoints}) => {
                             ? child.props._dashprivate_layout.props.defaultName // Behold, the default name, if a string it is
                             : child.props._dashprivate_layout.props.id;
 
-                        let icon;
-                        if (child.props._dashprivate_layout.props && child.props._dashprivate_layout.props.icon) {
-                            icon = child.props._dashprivate_layout.props.icon;
+                        let toolboxContent;
+                        if (child.props._dashprivate_layout.props && child.props._dashprivate_layout.props.toolboxContent) {
+                            toolboxContent = child.props._dashprivate_layout.props.toolboxContent;
+                            toolboxContent = renderDashComponent(toolboxContent);
                         }
                     return (
                         <div
@@ -52,7 +55,7 @@ export const Toolbox = ({toolboxContent, layouts, breakpoints}) => {
                             }}
                         >
                             <div className="toolbox-item-content">
-                                {icon} {content}
+                                {toolboxContent && toolboxContent} {!toolboxContent && content}
                             </div>
                         </div>
                     );
