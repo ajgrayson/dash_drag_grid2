@@ -14,7 +14,7 @@ dashboardItemResponsive(children=NULL, id=NULL, defaultName=NULL, h=NULL,
 inToolbox=NULL, isBounded=NULL, isDashboardItem=NULL,
 isDraggable=NULL, isResizable=NULL, maxH=NULL, maxW=NULL,
 minH=NULL, minW=NULL, moved=NULL, resizeHandles=NULL,
-static=NULL, w=NULL, x=NULL, y=NULL)
+static=NULL, toolboxContent=NULL, w=NULL, x=NULL, y=NULL)
 }
 
 \arguments{
@@ -50,6 +50,8 @@ Setting this value to false is equivalent to not using the DashboardItem wrapper
 \item{resizeHandles}{Character. Set the resizeHandles}
 
 \item{static}{Logical. If true, equal to `isDraggable: false, isResizable: false`.}
+
+\item{toolboxContent}{List of a list of or a singular dash component, string or numbers | a list of or a singular dash component, string or number. }
 
 \item{w}{Numeric | named list. The width of the x axis (default is 6).}
 

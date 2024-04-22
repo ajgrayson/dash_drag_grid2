@@ -28,6 +28,11 @@ export const Toolbox = ({toolboxContent, layouts, breakpoints}) => {
                             .defaultName === 'string'
                             ? child.props._dashprivate_layout.props.defaultName // Behold, the default name, if a string it is
                             : child.props._dashprivate_layout.props.id;
+
+                        let icon;
+                        if (child.props._dashprivate_layout.props && child.props._dashprivate_layout.props.icon) {
+                            icon = child.props._dashprivate_layout.props.icon;
+                        }
                     return (
                         <div
                             key={key}
@@ -47,7 +52,7 @@ export const Toolbox = ({toolboxContent, layouts, breakpoints}) => {
                             }}
                         >
                             <div className="toolbox-item-content">
-                                {content}
+                                {icon} {content}
                             </div>
                         </div>
                     );
