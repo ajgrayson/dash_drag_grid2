@@ -284,3 +284,4 @@ deps/
 inst/
 man/
 R/
+dash_drag_grid/*.min.*
