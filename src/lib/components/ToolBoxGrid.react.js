@@ -352,12 +352,12 @@ export default class ToolBoxGrid extends Component {
             layouts[bkp] = layout;
         }
 
-        let {filteredLayoutDict, toolboxDict} =
+        let {filteredLayout, toolboxLayout} =
             filterLayoutForToolboxItems(layouts);
 
         this.setState((prevState) => ({
-            layouts: filteredLayoutDict,
-            toolbox: toolboxDict,
+            layouts: filteredLayout,
+            toolbox: toolboxLayout,
             currentBreakpoint: currentBreakpoint,
         }));
     }

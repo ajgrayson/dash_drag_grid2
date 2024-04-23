@@ -124,4 +124,9 @@ DashboardItemResponsive.propTypes = {
      * The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID
      */
     defaultName: PropTypes.string,
+
+    toolboxContent: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node,
+    ])
 };

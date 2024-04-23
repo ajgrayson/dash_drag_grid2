@@ -1,6 +1,6 @@
 export const filterLayoutForToolboxItems = (layoutDict) => {
-    const toolboxDict = {};
-    const filteredLayoutDict = {};
+    const toolboxLayout = {};
+    const filteredLayout = {};
 
     for (const breakpoint in layoutDict) {
         const items = layoutDict[breakpoint];
@@ -13,11 +13,11 @@ export const filterLayoutForToolboxItems = (layoutDict) => {
             return true;
         });
 
-        filteredLayoutDict[breakpoint] = filteredItems;
-        toolboxDict[breakpoint] = toolboxItems;
+        filteredLayout[breakpoint] = filteredItems;
+        toolboxLayout[breakpoint] = toolboxItems;
     }
 
-    return {filteredLayoutDict, toolboxDict};
+    return {filteredLayout, toolboxLayout};
 };
 
 export const categorizeContent = (children, layoutDict, currentBreakpoint) => {
