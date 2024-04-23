@@ -61,7 +61,7 @@ toolBox = [
         x=0,
         y=0,
         inToolbox=False,
-        toolboxContent=[html.Div('icon test'),DashIconify(icon="ion:logo-github", width=30)]
+        toolboxContent=[DashIconify(icon="ion:logo-github", width=30), html.Div('icon test')]
     ),
 ]
 

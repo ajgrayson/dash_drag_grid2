@@ -280,8 +280,8 @@ Manifest.toml
 JuliaManifest.toml
 
 # build
-deps/
-inst/
-man/
-R/
-dash_drag_grid/*.min.*
+#deps/
+#inst/
+#man/
+#R/
+#dash_drag_grid/*.min.*
