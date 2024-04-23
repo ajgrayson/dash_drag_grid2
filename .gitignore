@@ -278,3 +278,10 @@ GitHub.sublime-settings
 # Julia manifest file names
 Manifest.toml
 JuliaManifest.toml
+
+# build
+#deps/
+#inst/
+#man/
+#R/
+#dash_drag_grid/*.min.*

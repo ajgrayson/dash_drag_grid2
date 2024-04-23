@@ -29,12 +29,13 @@ Setting this value to false is equivalent to not using the DashboardItem wrapper
 - `moved` (Bool; optional): Shows if it was moved
 - `resizeHandles` (String; optional): Set the resizeHandles
 - `static` (Bool; optional): If true, equal to `isDraggable: false, isResizable: false`.
+- `toolboxContent` (Array of a list of or a singular dash component, string or numbers | a list of or a singular dash component, string or number; optional)
 - `w` (Real | Dict; optional): The width of the x axis (default is 6).
 - `x` (Real | Dict; optional): The position on the x axis in number of columns (by default, the  max is 12).
 - `y` (Real | Dict; optional): The position on the y axis (the unit is 30px, by default)
 """
 function dashboarditemresponsive(; kwargs...)
-        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :w, :x, :y]
+        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :toolboxContent, :w, :x, :y]
         wild_props = Symbol[]
         return Component("dashboarditemresponsive", "DashboardItemResponsive", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

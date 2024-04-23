@@ -20,6 +20,7 @@ import {Toolbox} from './Toolbox.react.js';
 import '../../../node_modules/react-grid-layout/css/styles.css';
 import '../../../node_modules/react-resizable/css/styles.css';
 import './style.css';
+import GridItem from './GridItem.react.js';
 
 /**
  * ToolBoxGrid is an addition to the ResponsiveGridLayout
@@ -84,10 +85,14 @@ export default class ToolBoxGrid extends Component {
             setProps: this.props.setProps,
             onDropHeight: this.props.onDropHeight,
             onDropWidth: this.props.onDropWidth,
+            activeWindows: {}
         };
+
+        this.handleResizeStart = this.handleResizeStart.bind(this);
+        this.handleResizeStop = this.handleResizeStop.bind(this);
     }
 
-    onDrop = (layout, layoutItem, _event) => {
+    handleDrop = (layout, layoutItem, _event) => {
         _event.persist();
         this.setState((prevState) => {
             // Retrieve the data set in the drag start event
@@ -121,7 +126,7 @@ export default class ToolBoxGrid extends Component {
 
     /* We need to caputre the changes in break point to find it for the right toolbox. it will enable us to store different 
     configurations for sizes */
-    onBreakpointChange = (breakpoint) => {
+    handleBreakpointChange = (breakpoint) => {
         this.setState((prevState) => {
             return {
                 currentBreakpoint: breakpoint,
@@ -136,7 +141,7 @@ export default class ToolBoxGrid extends Component {
         });
     };
 
-    onLayoutChange = (current_layout, all_layouts) => {
+    handleLayoutChange = (current_layout, all_layouts) => {
         // First we save the layout to the local storage
         if (this.state.save) {
             all_layouts = appendInToolboxFalse(all_layouts);
@@ -147,42 +152,56 @@ export default class ToolBoxGrid extends Component {
     };
 
     onPutItem = (item) => {
-        this.setState(
-            (prevState) => {
-                const currentBreakpoint = prevState.currentBreakpoint;
-                const currentToolbox = prevState.toolbox;
-                const currentLayout = prevState.layouts;
+       this.setState((prevState) => {
+            const currentBreakpoint = prevState.currentBreakpoint;
+            const currentToolbox = prevState.toolbox;
+            const currentLayout = prevState.layouts;
 
-                // Find the item in the currentLayout at currentBreakpoint
-                const layoutIndex = currentLayout[currentBreakpoint].findIndex(
-                    (layoutItem) => layoutItem.i === item
-                );
+            // Find the item in the currentLayout at currentBreakpoint
+            const layoutIndex = currentLayout[currentBreakpoint].findIndex(
+                (layoutItem) => layoutItem.i === item
+            );
 
-                // If the item is found, remove it from currentLayout and store it
-                let toToolbox = null;
-                if (layoutIndex !== -1) {
-                    toToolbox = currentLayout[currentBreakpoint][layoutIndex];
-                    currentLayout[currentBreakpoint].splice(layoutIndex, 1);
-                }
+            // If the item is found, remove it from currentLayout and store it
+            let toToolbox = null;
+            if (layoutIndex !== -1) {
+                toToolbox = currentLayout[currentBreakpoint][layoutIndex];
+                currentLayout[currentBreakpoint].splice(layoutIndex, 1);
+            }
 
-                // Append the toToolbox item to the currentToolbox at the right breakpoint
-                const updatedToolbox = [
-                    ...currentToolbox[currentBreakpoint],
-                    toToolbox,
-                ];
+            // Append the toToolbox item to the currentToolbox at the right breakpoint
+            const updatedToolbox = [
+                ...currentToolbox[currentBreakpoint],
+                toToolbox,
+            ];
 
-                // Update the state of layout and toolbox to render the content
-                return {
-                    layouts: currentLayout,
-                    toolbox: {
-                        ...currentToolbox,
-                        [currentBreakpoint]: updatedToolbox,
-                    },
-                };
-            },
-            () => {}
-        );
-    };
+            // Update the state of layout and toolbox to render the content
+            return {
+                layouts: currentLayout,
+                toolbox: {
+                    ...currentToolbox,
+                    [currentBreakpoint]: updatedToolbox,
+                },
+            };
+        },
+        () => {});
+    }
+
+    handleResizeStart(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = true;
+            return newState;
+        })
+    }
+
+    handleResizeStop(layout, oldItem, newItem, placeholder, e, element) {
+        this.setState(prev => {
+            let newState = {...prev};
+            newState.activeWindows[oldItem.i] = false;
+            return newState;
+        })
+    }
 
     componentDidMount() {
         let {children = []} = this.props;
@@ -206,7 +225,7 @@ export default class ToolBoxGrid extends Component {
         // Build layout on inital start
         //   Priority to client local store [except if specified]
         //   Then layout
-        //   And then DashboardItem [except if sepcified])
+        //   And then DashboardItem [except if specified])
         if (clearSavedLayout) {
             saveToLs(`${id}-layouts`, null);
         }
@@ -308,12 +327,12 @@ export default class ToolBoxGrid extends Component {
             layouts[bkp] = layout;
         }
 
-        let {filteredLayoutDict, toolboxDict} =
+        let {filteredLayout, toolboxLayout} =
             filterLayoutForToolboxItems(layouts);
 
         this.setState((prevState) => ({
-            layouts: filteredLayoutDict,
-            toolbox: toolboxDict,
+            layouts: filteredLayout,
+            toolbox: toolboxLayout,
             currentBreakpoint: currentBreakpoint,
         }));
     }
@@ -352,11 +371,13 @@ export default class ToolBoxGrid extends Component {
                     style={style}
                     layouts={this.state.layouts}
                     cols={gridCols}
-                    onBreakpointChange={this.onBreakpointChange}
+                    onBreakpointChange={this.handleBreakpointChange}
                     breakpoints={breakpoints}
                     rowHeight={height}
-                    onDrop={this.onDrop}
-                    onLayoutChange={this.onLayoutChange}
+                    onDrop={this.handleDrop}
+                    onLayoutChange={this.handleLayoutChange}
+                    onResizeStart={this.handleResizeStart}
+                    onResizeStop={this.handleResizeStop}
                     {...this.props}
                 >
                     {gridContent.map((child, key) => {
@@ -390,33 +411,15 @@ export default class ToolBoxGrid extends Component {
                         } else {
                             _key = key.toString();
                         }
+
                         return (
-                            <div
+                            <GridItem
                                 key={_key}
-                                className="item"
+                                className={"item"}
                                 data-grid={_data_grid}
-                            >
-                                {
-                                    <div className="item-top-container">
-                                        <span className="item-top">...</span>
-                                        <button
-                                            className="close-button"
-                                            onClick={this.onPutItem.bind(
-                                                this,
-                                                _key
-                                            )}
-                                        >
-                                            &times;
-                                        </button>
-                                    </div>
-                                }
-                                <div
-                                    className="item-content"
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                >
-                                    {child}
-                                </div>
-                            </div>
+                                onCloseClicked={() => this.onPutItem(_key)}
+                                active={this.state.activeWindows[_key] || false}
+                            >{child}</GridItem>
                         );
                     })}
                 </ResponsiveReactGridLayout>

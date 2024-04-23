@@ -1,6 +1,7 @@
 from dash import Dash, callback, html, Input, Output
 import dash_drag_grid
 import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 
 app = Dash(__name__)
 
@@ -52,14 +53,15 @@ toolBox = [
         y=0,
         inToolbox=False
     ),
-                dash_drag_grid.DashboardItemResponsive(
+    dash_drag_grid.DashboardItemResponsive(
         children=[html.Div('Test 6'), dmc.Space(h=5), dmc.Text("This is a longer example lorem ipsum text to fill the content of the dif more")],
         id='test6',
-        h=5,
-        w=5,
+        h=3,
+        w=2,
         x=0,
         y=0,
-        inToolbox=False
+        inToolbox=False,
+        toolboxContent=[DashIconify(icon="ion:logo-github", width=30), html.Div('icon test')]
     ),
 ]
 
