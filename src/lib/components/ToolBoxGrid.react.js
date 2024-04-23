@@ -17,8 +17,8 @@ import {
     appendInToolboxFalse,
 } from '../utils';
 import {Toolbox} from './Toolbox.react.js';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import '../../../node_modules/react-grid-layout/css/styles.css';
+import '../../../node_modules/react-resizable/css/styles.css';
 import './style.css';
 import GridItem from './GridItem.react.js';
 
@@ -71,12 +71,9 @@ const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols) => {
  * `Input("<my-id>", "layout")`.
  */
 export default class ToolBoxGrid extends Component {
-
     constructor(props) {
-
         // Takee all elememts passed from the parent we need
         super(props);
-
         this.state = {
             currentBreakpoint: props.currentBreakpoint,
             toolbox: this.props.toolbox,
@@ -97,42 +94,20 @@ export default class ToolBoxGrid extends Component {
 
     handleDrop = (layout, layoutItem, _event) => {
         _event.persist();
-
         this.setState((prevState) => {
             // Retrieve the data set in the drag start event
             const droppedItemId = _event.dataTransfer.getData('text/plain');
             const currentBreakpoint = prevState.currentBreakpoint;
-    
-            // Calculate the max available space from x/y
-            let newX = layoutItem?.x ?? 0;
-            let newY = layoutItem?.y ?? 0;
-            var items = prevState.layouts[currentBreakpoint];
-            var pos = items.reduce((p, c) => {
-                if (c.x > newX && c.x < p.x) p.x = c.x;
-                if (c.y > newY && c.y < p.y) p.y = c.y;
-                return p;
-            }, {x: GRID_COLS_RESPONSIVE[currentBreakpoint], y: 100})
 
-            if (pos.y == 100) pos.y = 0;
-
-            const valOrMax = (t, max) => {
-                if (t > max) return max;
-                if (t <= 0) return max;
-                return t;
-            }
-
-            let newW = valOrMax(pos.x - newX, prevState.onDropWidth);
-            let newH = valOrMax(pos.y - newY, prevState.onDropHeight);
-
+            // Get the position of the drop, and set a default size of w4 and h5.
             const newItem = {
                 i: droppedItemId,
-                x: newX,
-                y: newY,
-                w: newW, 
-                h: newH, 
+                x: layoutItem?.x ?? 0,
+                y: layoutItem?.y ?? 0,
+                w: this.state.onDropWidth,
+                h: this.state.onDropHeight,
                 inToolbox: false,
             };
-
             // Update the layout array for the current breakpoint
             const updatedLayouts = {
                 ...prevState.layouts,
@@ -173,7 +148,7 @@ export default class ToolBoxGrid extends Component {
             saveToLs(`${this.state.id}-layouts`, all_layouts);
         }
         // Set the state of the layout for render
-        // this.setState({all_layouts});
+        this.setState({all_layouts});
     };
 
     onPutItem = (item) => {
@@ -383,7 +358,6 @@ export default class ToolBoxGrid extends Component {
         toolboxContent = Array.isArray(toolboxContent)
             ? toolboxContent
             : [toolboxContent];
-
         return (
             <React.Fragment>
                 <Toolbox
