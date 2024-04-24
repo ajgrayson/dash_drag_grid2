@@ -28,7 +28,7 @@ jobs:
 
     - name: Versioning (${{ github.ref_name }})
       run: |
-        find . -name "*" -exec sed -i "s/__VERSION__/${{ github.ref_name }}/g" {} +
+        find . -type f -exec sed -i "s/__VERSION__/${{ github.ref_name }}/g" {} +
     
     - name: Set up Python
       uses: actions/setup-python@v3
