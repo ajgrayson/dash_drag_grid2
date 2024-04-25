@@ -2,7 +2,7 @@
 name = "DashDragGrid"
 uuid = "1b08a953-4be3-4667-9a23-4015cbeafbd6"
 authors = ["Simon Unterbusch <simonunterbusch@unterbusch.com>"]
-version = "0.9.4"
+version = "__VERSION__"
 
 [deps]
 Dash = "1b08a953-4be3-4667-9a23-3db579824955"
