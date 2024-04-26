@@ -6,11 +6,11 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './style.css';
 
-import {renderDashComponent} from 'dash-extensions-js'
+import { renderDashComponent } from 'dash-extensions-js'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-function ToolBox({  items, title, component, layouts, breakpoints }) {
+function ToolBox({ items, title, component, layouts, breakpoints }) {
 
     const handleDragStart = (id) => (e) => {
         e.dataTransfer.setData('text/plain', id);
@@ -44,7 +44,7 @@ function ToolBox({  items, title, component, layouts, breakpoints }) {
             const _data_grid = { x: 0, y: 0, w: 1, h: 2 };
             const content = renderContent(child);
 
-            console.log('dataGrd', _data_grid, 'content', content)
+            console.log('renderToolboxItem', _data_grid, 'content', content)
 
             return (
                 <div
@@ -65,6 +65,8 @@ function ToolBox({  items, title, component, layouts, breakpoints }) {
         }
     };
 
+
+    console.log('render toolbox')
     return (
         <div className="toolbox-container">
             <span className="toolbox-title">{title}</span>
