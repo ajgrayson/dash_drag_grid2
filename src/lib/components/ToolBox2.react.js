@@ -12,6 +12,14 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 function ToolBox({ items, title, component, layouts, breakpoints }) {
 
+    Object.keys(layouts).forEach(bp => {
+        layouts[bp] = layouts[bp].map(l => {
+            l.h = 2;
+            l.w = 1;
+            return l;
+        });
+    }) 
+
     const handleDragStart = (id) => (e) => {
         e.dataTransfer.setData('text/plain', id);
     };
