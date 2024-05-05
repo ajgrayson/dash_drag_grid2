@@ -66,7 +66,7 @@ toolBox = [
 ]
 
 app.layout = dmc.Container(
-    dash_drag_grid.ToolBoxGrid(toolBox, id='test'),
+    [dash_drag_grid.ToolBox2(title="Detached Toolbox", items=toolBox), dash_drag_grid.ToolBoxGrid2(toolBox, id='test')],
     fluid=True,
     style={'backgroundColor': 'grey'}
 )

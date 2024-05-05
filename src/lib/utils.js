@@ -52,3 +52,93 @@ export function appendInToolboxFalse(allLayouts) {
     }
     return allLayouts;
 }
+
+export function defaultItemLayout(item_layout, id, key, ncols, nrows, max_cols, defaultInToolbox){
+    console.log('defaultItemLayout', item_layout, id, key, ncols, nrows, max_cols, defaultInToolbox);
+
+    const nb_items_x = Math.floor(max_cols / ncols);
+    const col = key % nb_items_x;
+    const row = Math.floor(key / nb_items_x);
+
+    // Default values for layout
+    const defaultChildLayout = {
+        i: id.toString() || key.toString(),
+        x: col * ncols,
+        y: row,
+        w: ncols,
+        h: nrows,
+        inToolbox: defaultInToolbox
+    };
+
+    // Merge with incoming item_layout, prioritizing values from item_layout
+    let result = Object.assign({}, defaultChildLayout, item_layout);
+    console.log('calculated default', result);
+    return result;
+};
+
+export function childWrapper (child, key) {
+
+    let res = {
+        node: child,
+        key: key,
+        layout: {}
+    };
+
+    // string
+    if (typeof child === 'string') {
+        res.id = key.toString();
+        res.type = 'string';
+        res.props = {};
+
+        // dash item
+    } else if (child.props._dashprivate_layout) {
+        res.props = child.props._dashprivate_layout.props;
+        res.type = child.props._dashprivate_layout.type;
+        res.id = res.props.id;
+
+        let { x, y, w, h } = res.props;
+
+        res.layout = {
+            i: res.id,
+            x: x,
+            y: y,
+            h: h,
+            w: w
+        };
+
+        // classic react
+    } else {
+        res.props = child.props;
+        res.type = child.type.name;
+        res.id = res.props.id;
+    }
+
+    if (typeof res.id === 'undefined') {
+        res.id = key.toString();
+    } else if (typeof res.id === 'object') {
+        res.id = JSON.stringify(res.id);
+    }
+
+    res.isDashboardItem = res.type == "DashboardItemResponsive";
+
+    return res;
+}
+
+export function normaliseChildren (children) {
+    children = Array.isArray(children) ? children : [children];
+    return children.map(childWrapper);
+}
+
+export function distributeItems (items, layouts, breakpoint) {
+    const toolboxItems = [];
+    const gridItems = [];
+    items.forEach((item) => {
+        const isInLayout = layouts[breakpoint]?.some(itm => itm.i === item.id);
+        if (isInLayout) {
+            gridItems.push(item);
+        } else {
+            toolboxItems.push(item);
+        }
+    });
+    return { gridItems, toolboxItems };
+}

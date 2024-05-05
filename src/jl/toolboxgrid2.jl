@@ -35,6 +35,7 @@ If you forget the leading . it will not work.
 - `draggableHandle` (String; optional): A CSS selector for tags that will act as the draggable handle.
 For example: draggableHandle:'.MyDragHandleClassName'
 If you forget the leading . it will not work.
+- `enableToolbox` (Bool; optional): When set to false no toolbox will be rendered
 - `gridCols` (Dict; optional): ({breakpoint: number}) the number of columns in the grid layout.
 Default value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}.
 - `height` (Real; optional): (number) height of a row (in px).
@@ -92,7 +93,7 @@ This makes about 6x faster paint performance
 - `verticalCompact` (Bool; optional): If true, the layout will compact vertically
 """
 function toolboxgrid2(; kwargs...)
-        available_props = Symbol[:children, :id, :autoSize, :breakpoints, :className, :clearSavedLayout, :compactType, :containerPadding, :currentBreakpoint, :defaultInToolbox, :draggableCancel, :draggableHandle, :gridCols, :height, :isBounded, :isDraggable, :isDroppable, :isResizable, :layouts, :margin, :ncols, :nrows, :onDropHeight, :onDropWidth, :preventCollision, :resizeHandles, :save, :style, :toolbox, :toolboxTitle, :transformScale, :useCSSTransforms, :verticalCompact]
+        available_props = Symbol[:children, :id, :autoSize, :breakpoints, :className, :clearSavedLayout, :compactType, :containerPadding, :currentBreakpoint, :defaultInToolbox, :draggableCancel, :draggableHandle, :enableToolbox, :gridCols, :height, :isBounded, :isDraggable, :isDroppable, :isResizable, :layouts, :margin, :ncols, :nrows, :onDropHeight, :onDropWidth, :preventCollision, :resizeHandles, :save, :style, :toolbox, :toolboxTitle, :transformScale, :useCSSTransforms, :verticalCompact]
         wild_props = Symbol[]
         return Component("toolboxgrid2", "ToolBoxGrid2", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

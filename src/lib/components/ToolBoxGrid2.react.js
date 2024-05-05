@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 import ToolBox from './ToolBox2.react';
 import GridItem from './GridItem.react'
-import { categorizeContent, appendInToolboxFalse, filterLayoutForToolboxItems } from '../utils';
 import { getFromLocalStorage, saveToLocalStorage } from '../localStorage';
-
-import PropTypes from 'prop-types';
 import { Responsive, WidthProvider as widthProvider } from 'react-grid-layout';
-
+import { normaliseChildren, defaultItemLayout, distributeItems } from '../utils';
 
 import {
     NROWS,
@@ -17,83 +15,9 @@ import {
     NCOLS_RESPONSIVE,
 } from '../constants';
 
+import useComms from '../useComms';
+
 const ResponsiveReactGridLayout = widthProvider(Responsive);
-
-const defaultItemLayout = (item_layout, id, key, ncols, nrows, max_cols, defaultInToolbox) => {
-    console.log('defaultItemLayout', item_layout, id, key, ncols, nrows, max_cols, defaultInToolbox);
-
-    const nb_items_x = Math.floor(max_cols / ncols);
-    const col = key % nb_items_x;
-    const row = Math.floor(key / nb_items_x);
-
-    // Default values for layout
-    const defaultChildLayout = {
-        i: id.toString() || key.toString(),
-        x: col * ncols,
-        y: row,
-        w: ncols,
-        h: nrows,
-        inToolbox: defaultInToolbox
-    };
-
-    // Merge with incoming item_layout, prioritizing values from item_layout
-    let result = Object.assign({}, defaultChildLayout, item_layout);
-    console.log('calculated default', result);
-    return result;
-};
-
-const childWrapper = (child, key) => {
-
-    let res = {
-        node: child,
-        key: key,
-        layout: {}
-    };
-
-    // string
-    if (typeof child === 'string') {
-        res.id = key.toString();
-        res.type = 'string';
-        res.props = {};
-
-        // dash item
-    } else if (child.props._dashprivate_layout) {
-        res.props = child.props._dashprivate_layout.props;
-        res.type = child.props._dashprivate_layout.type;
-        res.id = res.props.id;
-
-        let { x, y, w, h } = res.props;
-
-        res.layout = {
-            i: res.id,
-            x: x,
-            y: y,
-            h: h,
-            w: w
-        };
-
-        // classic react
-    } else {
-        res.props = child.props;
-        res.type = child.type.name;
-        res.id = res.props.id;
-    }
-
-    if (typeof res.id === 'undefined') {
-        res.id = key.toString();
-    } else if (typeof res.id === 'object') {
-        res.id = JSON.stringify(res.id);
-    }
-
-    res.isDashboardItem = res.type == "DashboardItemResponsive";
-
-    return res;
-}
-
-const normaliseChildren = (children) => {
-    children = Array.isArray(children) ? children : [children];
-    return children.map(childWrapper);
-}
 
 const calculateInitialLayout = (props, children) => {
     let {
@@ -195,20 +119,6 @@ const calculateInitialLayout = (props, children) => {
     return layouts;
 }
 
-const distributeItems = (items, layouts, breakpoint) => {
-    const toolboxItems = [];
-    const gridItems = [];
-    items.forEach((item) => {
-        const isInLayout = layouts[breakpoint]?.some(itm => itm.i === item.id);
-        if (isInLayout) {
-            gridItems.push(item);
-        } else {
-            toolboxItems.push(item);
-        }
-    });
-    return { gridItems, toolboxItems };
-}
-
 const ToolBoxGrid2 = (props) => {
 
     let [breakpoint, setBreakpoint] = useState(props.currentBreakpoint || 'lg');
@@ -252,6 +162,24 @@ const ToolBoxGrid2 = (props) => {
 
     }, [gridLayouts]);
 
+    let sentMessage = useComms('toolbox', (msg) => {
+        // if (msg.type == 'remove') {
+        //     setLayouts(prev => {
+        //         let newState = { ...prev };
+        //         newState[breakpoint] = newState[breakpoint].filter(i => {
+        //             console.log(i, droppedItemId)
+        //             if (i.i !== droppedItemId) {
+        //                 return true;
+        //             } else {
+        //                 console.log('removed', droppedItemId, 'from toolbox');
+        //                 return false;
+        //             }
+        //         })
+        //         return newState;
+        //     })
+        // }
+    }, 'json');
+
     const handleResizeItemStart = (layout, oldItem, newItem, placeholder, e, element) => {
         setActiveWindows(prev => {
             let newState = { ...prev };
@@ -293,10 +221,10 @@ const ToolBoxGrid2 = (props) => {
     };
 
     const handleLayoutChange = (current_layout, all_layouts) => {
-        console.log('handleLayoutChange (',breakpoint,')', current_layout, 'gridlayout', gridLayouts)
+        console.log('handleLayoutChange (', breakpoint, ')', current_layout, 'gridlayout', gridLayouts)
 
         setGridLayouts(prev => {
-            let nextState = {...prev};
+            let nextState = { ...prev };
 
             current_layout.forEach(lay => {
                 let el = nextState[breakpoint].find(e => e.i == lay.i);
@@ -313,14 +241,14 @@ const ToolBoxGrid2 = (props) => {
             return nextState;
         })
 
-    //     console.log('handleLayoutChange', current_layout, all_layouts)
-    //     // First we save the layout to the local storage
-    //     if (props.save) {
-    //         // all_layouts = appendInToolboxFalse(all_layouts);
-    //         saveToLocalStorage(`${props.id}-layouts`, all_layouts);
-    //     }
-    //     // Set the state of the layout for render
-    //     setLayouts(all_layouts);
+        //     console.log('handleLayoutChange', current_layout, all_layouts)
+        //     // First we save the layout to the local storage
+        //     if (props.save) {
+        //         // all_layouts = appendInToolboxFalse(all_layouts);
+        //         saveToLocalStorage(`${props.id}-layouts`, all_layouts);
+        //     }
+        //     // Set the state of the layout for render
+        //     setLayouts(all_layouts);
     };
 
     /**
@@ -346,7 +274,7 @@ const ToolBoxGrid2 = (props) => {
             return newState;
         });
         setToolboxLayouts(prev => {
-            let newState = { ...prev };            
+            let newState = { ...prev };
             newState[breakpoint].push(layout);
             return newState;
         });
@@ -410,6 +338,8 @@ const ToolBoxGrid2 = (props) => {
             })
             return newState;
         })
+
+        sentMessage({type: 'remove', 'id': droppedItemId})
     };
 
     let { toolboxItems, gridItems } = distributeItems(items, gridLayouts, breakpoint);
@@ -417,7 +347,7 @@ const ToolBoxGrid2 = (props) => {
     const {
         breakpoints = BREAKPOINTS,
         gridCols = GRID_COLS_RESPONSIVE,
-        height: rowHeight = ROW_HEIGHT, 
+        height: rowHeight = ROW_HEIGHT,
         className,
         style,
         toolboxTitle,
@@ -425,6 +355,7 @@ const ToolBoxGrid2 = (props) => {
     } = props;
 
     return (<>
+        {props.enableToolbox && (
         <ToolBox
             breakpoints={breakpoints}
             layouts={toolboxLayouts}
@@ -432,6 +363,7 @@ const ToolBoxGrid2 = (props) => {
             component={toolboxComponent}
             items={toolboxItems}
         />
+        )}
 
         <ResponsiveReactGridLayout
             className={className}
@@ -517,6 +449,7 @@ ToolBoxGrid2.defaultProps = {
     onDropHeight: 5,
     onDropWidth: 4,
     defaultInToolbox: false,
+    enableToolbox: true
 };
 
 ToolBoxGrid2.propTypes = {
@@ -752,6 +685,11 @@ ToolBoxGrid2.propTypes = {
      * This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default
      */
     defaultInToolbox: PropTypes.bool,
+
+    /**
+     * When set to false no toolbox will be rendered
+     */
+    enableToolbox: PropTypes.bool
 };
 
 export default ToolBoxGrid2;
