@@ -13,12 +13,17 @@ import {
 import { renderDashComponent } from 'dash-extensions-js'
 
 import { normaliseChildren } from '../utils';
+import { getFromLocalStorage, saveToLocalStorage } from '../localStorage';
 
 import useComms from '../useComms';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const calculateInitialLayout = (props, children, breakpoints) => {
+
+    const savedLayout = (props.linkedId && getFromLocalStorage(`${props.linkedId}-layouts`)) || {};
+
+    console.log(props.title, 'toolbox saved layout', savedLayout)
 
     let layouts = {};
 
@@ -32,7 +37,7 @@ const calculateInitialLayout = (props, children, breakpoints) => {
                 y = {},
                 w = {},
                 h = {},
-                inToolbox
+                // inToolbox = true
             } = child.props;
 
             let itemLayout = {
@@ -41,23 +46,29 @@ const calculateInitialLayout = (props, children, breakpoints) => {
                 y: y,
                 w: w,
                 h: h,
-                inToolbox
+                inToolbox: true
             };
 
-            return itemLayout;
+            // saved item layout here means that one is in the grid
+            let savedItemLayout = savedLayout[bkp] && savedLayout[bkp].find(el => el.i === child.id);
+            if (!savedItemLayout) {
+                return itemLayout;
+            }
+            
+            return null;
         });
 
-        layouts[bkp] = layout;
+        layouts[bkp] = layout.filter(i => i);
     }
 
-    console.log('toolbox layouts', layouts)
+    console.log(props.title, 'toolbox layouts', layouts)
 
     return layouts;
 }
 
 function ToolBox(props) {
 
-    let [layouts, setLayouts] = useState(props.layouts || {});
+    let [layouts, setLayouts] = useState({});
     let [items, setItems] = useState([]);
     let [breakpoints, setBreakpoints] = useState(props.breakpoints || BREAKPOINTS);
     let [breakpoint, setBreakpoint] = useState('lg')
@@ -65,17 +76,33 @@ function ToolBox(props) {
     let sentMessage = useComms('toolbox', (msg) => {
         console.log('toolbox rec', msg)
         if (msg.type == 'remove') {
-            setItems(prev => {
-                let newState = [...prev];
-                console.log('map', newState)
-                newState.map(n => {
-                    if (n.id == msg.id) {
-                        n.hidden = true;
+            setLayouts(prev => {
+                let newState = { ...prev };
+                newState[breakpoint] = newState[breakpoint].filter(i => {
+                    console.log(i, msg.id)
+                    if (i.i !== msg.id) {
+                        return true;
+                    } else {
+                        console.log('removed', msg.id, 'from toolbox');
+                        return false;
                     }
-                    return n;
-                })
+                });
                 return newState;
             })
+        } else if (msg.type === 'add') {
+            setLayouts(prev => {
+                let newState = { ...prev };
+                let newLayout = {
+                    i: msg.id,
+                    x: 0,
+                    y: 0,
+                    w: 2,
+                    h: 1,
+                    inToolbox: true
+                };
+                newState[breakpoint] = [...newState[breakpoint], newLayout] 
+                return newState;
+            });
         }
     }, 'json');
 
@@ -86,22 +113,32 @@ function ToolBox(props) {
         let normalizedChildren = normaliseChildren(props.items);
         setItems(normalizedChildren);
 
-        let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
-        console.log('lays', lays)
-        // setLayouts(lays);
+        if (!props.controlled) {
+            let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
+            console.log('lays', lays)
+            // setLayouts(lays);
 
-        let tl = {};
-        Object.keys(lays).forEach(bp => {
-            tl[bp] = lays[bp].filter(l => l.inToolbox);
-        });
-        setLayouts(tl);
+            let tl = {};
+            Object.keys(lays).forEach(bp => {
+                tl[bp] = lays[bp].filter(l => l.inToolbox);
+            });
+            setLayouts(tl);
+        
+            // let {gridItems, toolboxItems} = distributeItems(normalizedChildren, lays)
 
-        // let {gridItems, toolboxItems} = distributeItems(normalizedChildren, lays)
-
-        console.log('initial layout', lays);
+            console.log('initial layout', lays);
+        }
 
     }, [props.items]);
+    
 
+    if (props.controlled) {
+        useEffect(() => {
+            setLayouts(props.layouts || {})
+        }, [props.layouts])
+    }
+
+    // reset position and sizes
     Object.keys(layouts).forEach(bp => {
         layouts[bp] = layouts[bp].map(l => {
             l.h = 2;
@@ -111,6 +148,10 @@ function ToolBox(props) {
             return l;
         });
     })
+
+    const handleBreakpointChange = (breakpoint) => {
+        setBreakpoint(breakpoint);
+    };
 
     const handleDragStart = (id) => (e) => {
         e.dataTransfer.setData('text/plain', id);
@@ -171,9 +212,19 @@ function ToolBox(props) {
     };
 
     console.log('render toolbox')
-    let itms = items.filter(i => !i.hidden);
+    let itms = items.filter(i => {
+        const layoutItem = layouts[breakpoint]?.find(itm => itm.i === i.id);
+        console.log(props.title, 'layoutItem', layoutItem)
+        return layoutItem && layoutItem.inToolbox;
+    });
+    
+    console.log('breakpoint', breakpoint)
+    console.log(props.title, 'layouts', layouts)
+    console.log(props.title, 'items', items)
+    console.log(props.title, 'itms', itms)
+
     return (
-        <div className="toolbox-container">
+        <div className="toolbox-container toolbox-bg">
             <span className="toolbox-title">{props.title}</span>
             {itms.length > 0 && (
                 <ResponsiveReactGridLayout
@@ -185,6 +236,7 @@ function ToolBox(props) {
                     isDraggable={false}
                     containerPadding={[0, 0]}
                     compactType={'horizontal'}
+                    onBreakpointChange={handleBreakpointChange}
                 >
                     {itms.map(renderToolboxItem)}
                 </ResponsiveReactGridLayout>)}
@@ -196,6 +248,7 @@ function ToolBox(props) {
 };
 
 ToolBox.propTypes = {
+    linkedId: PropTypes.string.isRequired,
     items: PropTypes.array.isRequired,
     title: PropTypes.string,
     component: PropTypes.func,

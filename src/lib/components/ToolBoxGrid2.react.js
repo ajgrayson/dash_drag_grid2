@@ -39,7 +39,7 @@ const calculateInitialLayout = (props, children) => {
     if (clearSavedLayout) {
         saveToLocalStorage(`${id}-layouts`, null);
     }
-    const savedLayout = getFromLocalStorage(`${id}-layouts`);
+    const savedLayout = getFromLocalStorage(`${props.id}-layouts`);
 
     console.log('calculateInitialLayout')
     console.log('> savedLayout', savedLayout)
@@ -266,7 +266,7 @@ const ToolBoxGrid2 = (props) => {
                 if (i.i !== id) {
                     return true;
                 } else {
-                    layout = i;
+                    layout = {...i};
                     console.log('removed', id)
                     return false;
                 }
@@ -275,10 +275,13 @@ const ToolBoxGrid2 = (props) => {
         });
         setToolboxLayouts(prev => {
             let newState = { ...prev };
+            layout.inToolbox = true;
             newState[breakpoint].push(layout);
             return newState;
         });
         console.log('processed close', id);
+
+        sentMessage({type: 'add', 'id': id})
     }
 
     const calculateDimension = (val, def) => {
@@ -362,6 +365,7 @@ const ToolBoxGrid2 = (props) => {
             title={toolboxTitle}
             component={toolboxComponent}
             items={toolboxItems}
+            controlled={true}
         />
         )}
 

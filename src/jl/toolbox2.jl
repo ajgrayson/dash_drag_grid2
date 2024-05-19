@@ -11,10 +11,11 @@ Keyword arguments:
 - `breakpoints` (Dict; optional)
 - `items` (Array; required)
 - `layouts` (Dict; optional)
+- `linkedId` (String; required)
 - `title` (String; optional)
 """
 function toolbox2(; kwargs...)
-        available_props = Symbol[:breakpoints, :items, :layouts, :title]
+        available_props = Symbol[:breakpoints, :items, :layouts, :linkedId, :title]
         wild_props = Symbol[]
         return Component("toolbox2", "ToolBox2", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

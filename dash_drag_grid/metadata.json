@@ -632,6 +632,13 @@
     "displayName": "ToolBox",
     "methods": [],
     "props": {
+      "linkedId": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
+      },
       "items": {
         "type": {
           "name": "array"
