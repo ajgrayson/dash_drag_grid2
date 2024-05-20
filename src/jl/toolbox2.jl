@@ -11,7 +11,7 @@ Keyword arguments:
 - `breakpoints` (Dict; optional)
 - `items` (Array; required)
 - `layouts` (Dict; optional)
-- `linkedId` (String; required)
+- `linkedId` (String; optional)
 - `title` (String; optional)
 """
 function toolbox2(; kwargs...)

@@ -636,7 +636,7 @@
         "type": {
           "name": "string"
         },
-        "required": true,
+        "required": false,
         "description": ""
       },
       "items": {

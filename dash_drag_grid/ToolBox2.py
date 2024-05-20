@@ -15,7 +15,7 @@ Keyword arguments:
 
 - layouts (dict; optional)
 
-- linkedId (string; required)
+- linkedId (string; optional)
 
 - title (string; default "Toolbox")"""
     _children_props = []
@@ -23,7 +23,7 @@ Keyword arguments:
     _namespace = 'dash_drag_grid'
     _type = 'ToolBox2'
     @_explicitize_args
-    def __init__(self, linkedId=Component.REQUIRED, items=Component.REQUIRED, title=Component.UNDEFINED, component=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, **kwargs):
+    def __init__(self, linkedId=Component.UNDEFINED, items=Component.REQUIRED, title=Component.UNDEFINED, component=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, **kwargs):
         self._prop_names = ['breakpoints', 'items', 'layouts', 'linkedId', 'title']
         self._valid_wildcard_attributes =            []
         self.available_properties = ['breakpoints', 'items', 'layouts', 'linkedId', 'title']
@@ -33,7 +33,7 @@ Keyword arguments:
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        for k in ['items', 'linkedId']:
+        for k in ['items']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

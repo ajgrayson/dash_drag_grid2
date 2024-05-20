@@ -124,8 +124,6 @@ function ToolBox(props) {
             });
             setLayouts(tl);
         
-            // let {gridItems, toolboxItems} = distributeItems(normalizedChildren, lays)
-
             console.log('initial layout', lays);
         }
 
@@ -248,7 +246,7 @@ function ToolBox(props) {
 };
 
 ToolBox.propTypes = {
-    linkedId: PropTypes.string.isRequired,
+    linkedId: PropTypes.string,
     items: PropTypes.array.isRequired,
     title: PropTypes.string,
     component: PropTypes.func,
