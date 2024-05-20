@@ -3,14 +3,13 @@ module DashDragGrid
 using Dash
 
 const resources_path = realpath(joinpath( @__DIR__, "..", "deps"))
-const version = "0.9.4"
+const version = "__VERSION__"
 
 include("jl/dashboarditemresponsive.jl")
 include("jl/responsivegridlayout.jl")
 include("jl/toolbox2.jl")
 include("jl/toolboxgrid.jl")
 include("jl/toolboxgrid2.jl")
-include("jl/toolboxgrid3.jl")
 
 function __init__()
     DashBase.register_package(

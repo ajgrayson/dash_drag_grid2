@@ -14,12 +14,12 @@ toolBoxGrid2(children=NULL, id=NULL, autoSize=NULL, breakpoints=NULL,
 className=NULL, clearSavedLayout=NULL, compactType=NULL,
 containerPadding=NULL, currentBreakpoint=NULL,
 defaultInToolbox=NULL, draggableCancel=NULL,
-draggableHandle=NULL, gridCols=NULL, height=NULL,
-isBounded=NULL, isDraggable=NULL, isDroppable=NULL,
-isResizable=NULL, layouts=NULL, margin=NULL, ncols=NULL,
-nrows=NULL, onDropHeight=NULL, onDropWidth=NULL,
-preventCollision=NULL, resizeHandles=NULL, save=NULL,
-style=NULL, toolbox=NULL, toolboxComponent=NULL,
+draggableHandle=NULL, enableToolbox=NULL, gridCols=NULL,
+height=NULL, isBounded=NULL, isDraggable=NULL,
+isDroppable=NULL, isResizable=NULL, layouts=NULL,
+margin=NULL, ncols=NULL, nrows=NULL, onDropHeight=NULL,
+onDropWidth=NULL, preventCollision=NULL, resizeHandles=NULL,
+save=NULL, style=NULL, toolbox=NULL, toolboxComponent=NULL,
 toolboxTitle=NULL, transformScale=NULL,
 useCSSTransforms=NULL, verticalCompact=NULL)
 }
@@ -60,6 +60,8 @@ If you forget the leading . it will not work.}
 \item{draggableHandle}{Character. A CSS selector for tags that will act as the draggable handle.
 For example: draggableHandle:'.MyDragHandleClassName'
 If you forget the leading . it will not work.}
+
+\item{enableToolbox}{Logical. When set to false no toolbox will be rendered}
 
 \item{gridCols}{Named list. ({breakpoint: number}) the number of columns in the grid layout.
 Default value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}.}
