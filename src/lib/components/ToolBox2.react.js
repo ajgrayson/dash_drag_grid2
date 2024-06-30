@@ -140,47 +140,8 @@ function ToolBox(props) {
         e.dataTransfer.setData('text/plain', id);
     };
 
-    // const renderContent = (child) => {
-    //         //     try {
-    //         let dashLayoutProps = child.node.props._dashprivate_layout?.props;
-    //         if (dashLayoutProps?.toolboxContent) {
-    //             return renderDashComponent(dashLayoutProps.toolboxContent);
-    //         }
-    //         if (dashLayoutProps) {
-    //             const content = typeof dashLayoutProps?.defaultName === 'string'
-    //                 ? dashLayoutProps.defaultName
-    //                 : dashLayoutProps.id;
-    //             return content;
-    //         }
-    //         if (child.node.props.toolboxContent) {
-    //             return renderDashComponent(child.node.props.toolboxContent);
-    //         }
-
-    //         return child.props.id;
-    //     } catch (e) {
-    //             //     }
-    // }
-
     const renderContent = (child) => {
-                return renderDashComponent(child.element);
-        // try {
-        //     let dashLayoutProps = child.node.props._dashprivate_layout?.props;
-        //     if (dashLayoutProps?.toolboxContent) {
-        //         return renderDashComponent(dashLayoutProps.toolboxContent);
-        //     }
-        //     if (dashLayoutProps) {
-        //         const content = typeof dashLayoutProps?.defaultName === 'string'
-        //             ? dashLayoutProps.defaultName
-        //             : dashLayoutProps.id;
-        //         return content;
-        //     }
-        //     if (child.node.props.toolboxContent) {
-        //         return renderDashComponent(child.node.props.toolboxContent);
-        //     }
-
-        //     return child.props.id;
-        // } catch (e) {
-        //             // }
+        return renderDashComponent(child.element);
     }
 
     const renderToolboxItem = (child, index) => {
