@@ -29,6 +29,7 @@ will be cleared on the next page load.
 - `containerPadding` (Array of Reals | Dict; optional): Padding inside the container [x, y] in px
 - `currentBreakpoint` (String; optional): current breakpoint
 - `defaultInToolbox` (Bool; optional): This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default
+- `deleteOnRemove` (Bool; optional): When an item is removed from the grid, delete it's underlying element rather than just hiding it
 - `draggableCancel` (String; optional): (string) A CSS selector for tags that will not be draggable.
 or example: draggableCancel:'.MyNonDraggableAreaClassName'
 If you forget the leading . it will not work.
@@ -93,7 +94,7 @@ This makes about 6x faster paint performance
 - `verticalCompact` (Bool; optional): If true, the layout will compact vertically
 """
 function toolboxgrid2(; kwargs...)
-        available_props = Symbol[:children, :id, :autoSize, :breakpoints, :className, :clearSavedLayout, :compactType, :containerPadding, :currentBreakpoint, :defaultInToolbox, :draggableCancel, :draggableHandle, :enableToolbox, :gridCols, :height, :isBounded, :isDraggable, :isDroppable, :isResizable, :layouts, :margin, :ncols, :nrows, :onDropHeight, :onDropWidth, :preventCollision, :resizeHandles, :save, :style, :toolbox, :toolboxTitle, :transformScale, :useCSSTransforms, :verticalCompact]
+        available_props = Symbol[:children, :id, :autoSize, :breakpoints, :className, :clearSavedLayout, :compactType, :containerPadding, :currentBreakpoint, :defaultInToolbox, :deleteOnRemove, :draggableCancel, :draggableHandle, :enableToolbox, :gridCols, :height, :isBounded, :isDraggable, :isDroppable, :isResizable, :layouts, :margin, :ncols, :nrows, :onDropHeight, :onDropWidth, :preventCollision, :resizeHandles, :save, :style, :toolbox, :toolboxTitle, :transformScale, :useCSSTransforms, :verticalCompact]
         wild_props = Symbol[]
         return Component("toolboxgrid2", "ToolBoxGrid2", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

@@ -1667,6 +1667,120 @@
           "value": "true",
           "computed": false
         }
+      },
+      "deleteOnRemove": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "When an item is removed from the grid, delete it's underlying element rather than just hiding it"
+      }
+    }
+  },
+  "src/lib/components/ToolboxItem.react.js": {
+    "description": "ToolboxItem is a wrapper that is intended to be used with ToolBoxGrid.\nToolboxItem specify the position and size of the item on the dashboard and if it is in the toolbox.",
+    "displayName": "ToolboxItem",
+    "methods": [],
+    "props": {
+      "id": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": true,
+        "description": "The ID used to identify this component in Dash callbacks."
+      },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "node"
+              }
+            },
+            {
+              "name": "node"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The child or list of children wrapped by the component."
+      },
+      "x": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The position on the x axis in number of columns (by default, the  max is 12)."
+      },
+      "y": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The position on the y axis (the unit is 30px, by default)"
+      },
+      "w": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The width of the x axis (default is 6)."
+      },
+      "h": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "object"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The height on the of y axis (default is 4)"
+      },
+      "defaultName": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID"
       }
     }
   }

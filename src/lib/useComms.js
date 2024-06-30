@@ -19,7 +19,7 @@ function useComms(channel, onMessage, dataType = 'json', targetOrigin = '*') {
 
         // Check if the message is intended for this channel
         if (event && event.data && event.data.channel === channel) {
-            console.log('message recieved', event.data.message)
+            
             let msg = event.data.message;
             if (dataType == 'json') {
                 msg = JSON.parse(event.data.message);
@@ -40,7 +40,6 @@ function useComms(channel, onMessage, dataType = 'json', targetOrigin = '*') {
 
     // Function to send messages
     const sendMessage = useCallback((message) => {
-        console.log('message sent', msg)
         let msg = message;
         if (dataType == 'json') {
             msg = JSON.stringify(message);

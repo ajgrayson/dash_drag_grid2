@@ -12,7 +12,7 @@ import {
 
 import { renderDashComponent } from 'dash-extensions-js'
 
-import { normaliseChildren } from '../utils';
+import { normaliseChildren, normalizeToolboxItems } from '../utils';
 import { getFromLocalStorage, saveToLocalStorage } from '../localStorage';
 
 import useComms from '../useComms';
@@ -23,45 +23,30 @@ const calculateInitialLayout = (props, children, breakpoints) => {
 
     const savedLayout = (props.linkedId && getFromLocalStorage(`${props.linkedId}-layouts`)) || {};
 
-    console.log(props.title, 'toolbox saved layout', savedLayout)
-
     let layouts = {};
 
     // Define the layout for each specific item / breakpoint
     for (var bkp in breakpoints) {
         const layout = children.map((child) => {
 
-            const {
-                id = {},
-                x = {},
-                y = {},
-                w = {},
-                h = {},
-                // inToolbox = true
-            } = child.props;
-
-            let itemLayout = {
-                i: child.id,
-                x: x,
-                y: y,
-                w: w,
-                h: h,
-                inToolbox: true
-            };
-
-            // saved item layout here means that one is in the grid
+            // saved item layout here means that one is in the grid so we shouldn't show it in the toolbox
             let savedItemLayout = savedLayout[bkp] && savedLayout[bkp].find(el => el.i === child.id);
             if (!savedItemLayout) {
-                return itemLayout;
+                                return {
+                    i: child.id,
+                    x: 0,
+                    y: 0,
+                    w: 1,
+                    h: 2,
+                    inToolbox: true
+                };
             }
-            
+
             return null;
         });
 
-        layouts[bkp] = layout.filter(i => i);
+        layouts[bkp] = layout;
     }
-
-    console.log(props.title, 'toolbox layouts', layouts)
 
     return layouts;
 }
@@ -74,57 +59,20 @@ function ToolBox(props) {
     let [breakpoint, setBreakpoint] = useState('lg')
 
     let sentMessage = useComms('toolbox', (msg) => {
-        console.log('toolbox rec', msg)
-        if (msg.type == 'remove') {
-            setLayouts(prev => {
-                let newState = { ...prev };
-                newState[breakpoint] = newState[breakpoint].filter(i => {
-                    console.log(i, msg.id)
-                    if (i.i !== msg.id) {
-                        return true;
-                    } else {
-                        console.log('removed', msg.id, 'from toolbox');
-                        return false;
-                    }
-                });
-                return newState;
-            })
+                if (msg.type == 'remove') {
+            removeItemFromLayout(msg.id);
         } else if (msg.type === 'add') {
-            setLayouts(prev => {
-                let newState = { ...prev };
-                let newLayout = {
-                    i: msg.id,
-                    x: 0,
-                    y: 0,
-                    w: 2,
-                    h: 1,
-                    inToolbox: true
-                };
-                newState[breakpoint] = [...newState[breakpoint], newLayout] 
-                return newState;
-            });
+            addItemToLayout(msg.id);
         }
     }, 'json');
 
     useEffect(() => {
 
-        console.log('loading...');
-
-        let normalizedChildren = normaliseChildren(props.items);
+        let normalizedChildren = normalizeToolboxItems(props.items);
         setItems(normalizedChildren);
 
         if (!props.controlled) {
-            let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
-            console.log('lays', lays)
-            // setLayouts(lays);
-
-            let tl = {};
-            Object.keys(lays).forEach(bp => {
-                tl[bp] = lays[bp].filter(l => l.inToolbox);
-            });
-            setLayouts(tl);
-        
-            console.log('initial layout', lays);
+            initialiseUncontrolledLayout(normalizedChildren);
         }
 
     }, [props.items]);
@@ -136,16 +84,53 @@ function ToolBox(props) {
         }, [props.layouts])
     }
 
-    // reset position and sizes
-    Object.keys(layouts).forEach(bp => {
-        layouts[bp] = layouts[bp].map(l => {
-            l.h = 2;
-            l.w = 1;
-            l.x = 0;
-            l.y = 0;
-            return l;
+    /**
+     * If it's an uncontrolled layout that means that this toolbox is responsible
+     * internally for how it lays things out. Controlled means the props pass in the 
+     * layout information.
+     * @param {*} normalizedChildren 
+     */
+    const initialiseUncontrolledLayout = (normalizedChildren) => {
+                let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
+                // setLayouts(lays);
+
+        // let tl = {};
+        // Object.keys(lays).forEach(bp => {
+        //     tl[bp] = lays[bp].filter(l => !!l);
+        // });
+        setLayouts(lays);
+    
+            }
+
+    const removeItemFromLayout = (id) => {
+        setLayouts(prev => {
+            let newState = { ...prev };
+            newState[breakpoint] = newState[breakpoint].filter(i => {
+                                if (i && i.i !== id) {
+                    return true;
+                } else {
+                                        return false;
+                }
+            });
+            return newState;
+        })
+    }
+
+    const addItemToLayout = (id) => {
+        setLayouts(prev => {
+            let newState = { ...prev };
+            let newLayout = {
+                i: id,
+                x: 0,
+                y: 0,
+                w: 2,
+                h: 1,
+                inToolbox: true
+            };
+            newState[breakpoint] = [...newState[breakpoint], newLayout] 
+            return newState;
         });
-    })
+    }
 
     const handleBreakpointChange = (breakpoint) => {
         setBreakpoint(breakpoint);
@@ -155,40 +140,54 @@ function ToolBox(props) {
         e.dataTransfer.setData('text/plain', id);
     };
 
+    // const renderContent = (child) => {
+    //         //     try {
+    //         let dashLayoutProps = child.node.props._dashprivate_layout?.props;
+    //         if (dashLayoutProps?.toolboxContent) {
+    //             return renderDashComponent(dashLayoutProps.toolboxContent);
+    //         }
+    //         if (dashLayoutProps) {
+    //             const content = typeof dashLayoutProps?.defaultName === 'string'
+    //                 ? dashLayoutProps.defaultName
+    //                 : dashLayoutProps.id;
+    //             return content;
+    //         }
+    //         if (child.node.props.toolboxContent) {
+    //             return renderDashComponent(child.node.props.toolboxContent);
+    //         }
+
+    //         return child.props.id;
+    //     } catch (e) {
+    //             //     }
+    // }
+
     const renderContent = (child) => {
-        console.log('renderContent', child)
-        try {
-            if (child.node.props._dashprivate_layout && child.node.props._dashprivate_layout.props && child.node.props._dashprivate_layout.props.toolboxContent) {
-                const toolboxContent = child.node.props._dashprivate_layout.props.toolboxContent
-                    ? child.node.props._dashprivate_layout.props.toolboxContent
-                    : null;
+                return renderDashComponent(child.element);
+        // try {
+        //     let dashLayoutProps = child.node.props._dashprivate_layout?.props;
+        //     if (dashLayoutProps?.toolboxContent) {
+        //         return renderDashComponent(dashLayoutProps.toolboxContent);
+        //     }
+        //     if (dashLayoutProps) {
+        //         const content = typeof dashLayoutProps?.defaultName === 'string'
+        //             ? dashLayoutProps.defaultName
+        //             : dashLayoutProps.id;
+        //         return content;
+        //     }
+        //     if (child.node.props.toolboxContent) {
+        //         return renderDashComponent(child.node.props.toolboxContent);
+        //     }
 
-                return renderDashComponent(toolboxContent);
-            }
-            if (child.node.props._dashprivate_layout && child.node.props._dashprivate_layout.props) {
-                const content = typeof child.node.props._dashprivate_layout.props.defaultName === 'string'
-                    ? child.node.props._dashprivate_layout.props.defaultName
-                    : child.node.props._dashprivate_layout.props.id;
-                return content;
-            }
-            if (child.node.props.toolboxContent) {
-                return renderDashComponent(child.node.props.toolboxContent);
-            }
-
-            return child.props.id;
-        } catch (e) {
-            console.log('Ex 1', e)
-        }
+        //     return child.props.id;
+        // } catch (e) {
+        //             // }
     }
 
     const renderToolboxItem = (child, index) => {
-        try {
-
-            const key = child.props.id || `toolbox-item-${index}`;
+                try {
+            const key = child.id || `toolbox-item-${index}`;
             const _data_grid = { x: 0, y: 0, w: 1, h: 2 };
             const content = renderContent(child);
-
-            console.log('renderToolboxItem', _data_grid, 'content', content)
 
             return (
                 <div
@@ -205,22 +204,30 @@ function ToolBox(props) {
                 </div>
             );
         } catch (e) {
-            console.log('Ex 2', e)
-        }
+                    }
     };
 
-    console.log('render toolbox')
-    let itms = items.filter(i => {
-        const layoutItem = layouts[breakpoint]?.find(itm => itm.i === i.id);
-        console.log(props.title, 'layoutItem', layoutItem)
-        return layoutItem && layoutItem.inToolbox;
+    let lays = {...layouts};
+        // reset position and sizes
+    Object.keys(lays).forEach(bp => {
+                lays[bp] = lays[bp].filter(i => !!i).map(ln => {
+                        let b = {...ln};
+            b.i = ln.i;
+            b.h = 2;
+            b.w = 1;
+            b.x = 0;
+            b.y = 0;
+            b.u = 1;
+            return b;
+        });
+    });
+
+        let itms = items.filter(i => {
+        const layoutItem = lays[breakpoint]?.find(itm => itm.i === i.id);
+                return layoutItem && layoutItem.inToolbox;
     });
     
-    console.log('breakpoint', breakpoint)
-    console.log(props.title, 'layouts', layouts)
-    console.log(props.title, 'items', items)
-    console.log(props.title, 'itms', itms)
-
+                
     return (
         <div className="toolbox-container toolbox-bg">
             <span className="toolbox-title">{props.title}</span>
@@ -229,7 +236,7 @@ function ToolBox(props) {
                     cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
                     breakpoints={breakpoints}
                     rowHeight={30}
-                    layouts={layouts}
+                    layouts={lays}
                     isResizable={false}
                     isDraggable={false}
                     containerPadding={[0, 0]}

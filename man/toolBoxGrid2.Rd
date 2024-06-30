@@ -13,13 +13,14 @@
 toolBoxGrid2(children=NULL, id=NULL, autoSize=NULL, breakpoints=NULL,
 className=NULL, clearSavedLayout=NULL, compactType=NULL,
 containerPadding=NULL, currentBreakpoint=NULL,
-defaultInToolbox=NULL, draggableCancel=NULL,
-draggableHandle=NULL, enableToolbox=NULL, gridCols=NULL,
-height=NULL, isBounded=NULL, isDraggable=NULL,
-isDroppable=NULL, isResizable=NULL, layouts=NULL,
-margin=NULL, ncols=NULL, nrows=NULL, onDropHeight=NULL,
-onDropWidth=NULL, preventCollision=NULL, resizeHandles=NULL,
-save=NULL, style=NULL, toolbox=NULL, toolboxComponent=NULL,
+defaultInToolbox=NULL, deleteOnRemove=NULL,
+draggableCancel=NULL, draggableHandle=NULL,
+enableToolbox=NULL, gridCols=NULL, height=NULL,
+isBounded=NULL, isDraggable=NULL, isDroppable=NULL,
+isResizable=NULL, layouts=NULL, margin=NULL, ncols=NULL,
+nrows=NULL, onDropHeight=NULL, onDropWidth=NULL,
+preventCollision=NULL, resizeHandles=NULL, save=NULL,
+style=NULL, toolbox=NULL, toolboxComponent=NULL,
 toolboxTitle=NULL, transformScale=NULL,
 useCSSTransforms=NULL, verticalCompact=NULL)
 }
@@ -52,6 +53,8 @@ will be cleared on the next page load.}
 \item{currentBreakpoint}{Character. current breakpoint}
 
 \item{defaultInToolbox}{Logical. This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default}
+
+\item{deleteOnRemove}{Logical. When an item is removed from the grid, delete it's underlying element rather than just hiding it}
 
 \item{draggableCancel}{Character. (string) A CSS selector for tags that will not be draggable.
 or example: draggableCancel:'.MyNonDraggableAreaClassName'

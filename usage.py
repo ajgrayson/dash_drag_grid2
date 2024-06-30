@@ -65,8 +65,31 @@ toolBox = [
     ),
 ]
 
+toolBoxItems = [
+    dash_drag_grid.ToolboxItem(
+        id='test1',
+    ),
+    dash_drag_grid.ToolboxItem(
+        id='test2'
+    ),
+    dash_drag_grid.ToolboxItem(
+        id='test3'
+    ),
+    dash_drag_grid.ToolboxItem(
+        id='test4'
+    ),
+    dash_drag_grid.ToolboxItem(
+        id='test5',
+        children=[html.Div('test 5')]
+    ),
+    dash_drag_grid.ToolboxItem(
+        id='test6',
+        children=[DashIconify(icon="ion:logo-github", width=30), html.Div('icon test')]
+    ),
+]
+
 app.layout = dmc.Container(
-    [dash_drag_grid.ToolBox2(title="Detached Toolbox", items=toolBox, linkedId='test'), dash_drag_grid.ToolBoxGrid2(toolBox, id='test')],
+    [dash_drag_grid.ToolBox2(title="Detached Toolbox", items=toolBoxItems, linkedId='test'), dash_drag_grid.ToolBoxGrid2(toolBox, id='test')],
     fluid=True,
     style={'backgroundColor': 'grey'}
 )
