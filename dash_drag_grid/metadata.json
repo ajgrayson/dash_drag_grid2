@@ -1781,6 +1781,13 @@
         },
         "required": false,
         "description": "The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID"
+      },
+      "inToolbox": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Indicates that this item is in the toolbox and thus won't be rendered in the grid."
       }
     }
   }

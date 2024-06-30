@@ -16,12 +16,13 @@ Keyword arguments:
 - `id` (String | Dict; required): The ID used to identify this component in Dash callbacks.
 - `defaultName` (String; optional): The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID
 - `h` (Real | Dict; optional): The height on the of y axis (default is 4)
+- `inToolbox` (Bool; optional): Indicates that this item is in the toolbox and thus won't be rendered in the grid.
 - `w` (Real | Dict; optional): The width of the x axis (default is 6).
 - `x` (Real | Dict; optional): The position on the x axis in number of columns (by default, the  max is 12).
 - `y` (Real | Dict; optional): The position on the y axis (the unit is 30px, by default)
 """
 function toolboxitem(; kwargs...)
-        available_props = Symbol[:children, :id, :defaultName, :h, :w, :x, :y]
+        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :w, :x, :y]
         wild_props = Symbol[]
         return Component("toolboxitem", "ToolboxItem", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

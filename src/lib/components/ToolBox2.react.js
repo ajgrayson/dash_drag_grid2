@@ -32,7 +32,7 @@ const calculateInitialLayout = (props, children, breakpoints) => {
             // saved item layout here means that one is in the grid so we shouldn't show it in the toolbox
             let savedItemLayout = savedLayout[bkp] && savedLayout[bkp].find(el => el.i === child.id);
             if (!savedItemLayout) {
-                                return {
+                return {
                     i: child.id,
                     x: 0,
                     y: 0,
@@ -59,7 +59,7 @@ function ToolBox(props) {
     let [breakpoint, setBreakpoint] = useState('lg')
 
     let sentMessage = useComms('toolbox', (msg) => {
-                if (msg.type == 'remove') {
+        if (msg.type == 'remove') {
             removeItemFromLayout(msg.id);
         } else if (msg.type === 'add') {
             addItemToLayout(msg.id);
@@ -76,7 +76,6 @@ function ToolBox(props) {
         }
 
     }, [props.items]);
-    
 
     if (props.controlled) {
         useEffect(() => {
@@ -91,25 +90,18 @@ function ToolBox(props) {
      * @param {*} normalizedChildren 
      */
     const initialiseUncontrolledLayout = (normalizedChildren) => {
-                let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
-                // setLayouts(lays);
-
-        // let tl = {};
-        // Object.keys(lays).forEach(bp => {
-        //     tl[bp] = lays[bp].filter(l => !!l);
-        // });
+        let lays = calculateInitialLayout(props, normalizedChildren, breakpoints);
         setLayouts(lays);
-    
-            }
+    }
 
     const removeItemFromLayout = (id) => {
         setLayouts(prev => {
             let newState = { ...prev };
             newState[breakpoint] = newState[breakpoint].filter(i => {
-                                if (i && i.i !== id) {
+                if (i && i.i !== id) {
                     return true;
                 } else {
-                                        return false;
+                    return false;
                 }
             });
             return newState;
@@ -127,7 +119,7 @@ function ToolBox(props) {
                 h: 1,
                 inToolbox: true
             };
-            newState[breakpoint] = [...newState[breakpoint], newLayout] 
+            newState[breakpoint] = [...newState[breakpoint], newLayout]
             return newState;
         });
     }
@@ -145,7 +137,7 @@ function ToolBox(props) {
     }
 
     const renderToolboxItem = (child, index) => {
-                try {
+        try {
             const key = child.id || `toolbox-item-${index}`;
             const _data_grid = { x: 0, y: 0, w: 1, h: 2 };
             const content = renderContent(child);
@@ -165,14 +157,14 @@ function ToolBox(props) {
                 </div>
             );
         } catch (e) {
-                    }
+        }
     };
 
-    let lays = {...layouts};
-        // reset position and sizes
+    let lays = { ...layouts };
+    // reset position and sizes
     Object.keys(lays).forEach(bp => {
-                lays[bp] = lays[bp].filter(i => !!i).map(ln => {
-                        let b = {...ln};
+        lays[bp] = lays[bp].filter(i => !!i).map(ln => {
+            let b = { ...ln };
             b.i = ln.i;
             b.h = 2;
             b.w = 1;
@@ -183,12 +175,12 @@ function ToolBox(props) {
         });
     });
 
-        let itms = items.filter(i => {
+    let itms = items.filter(i => {
         const layoutItem = lays[breakpoint]?.find(itm => itm.i === i.id);
-                return layoutItem && layoutItem.inToolbox;
+        return layoutItem && layoutItem.inToolbox;
     });
-    
-                
+
+
     return (
         <div className="toolbox-container toolbox-bg">
             <span className="toolbox-title">{props.title}</span>

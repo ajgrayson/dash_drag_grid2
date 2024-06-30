@@ -18,7 +18,6 @@ export default class ToolboxItem extends React.Component {
     }
 }
 
-
 ToolboxItem.propTypes = {
     /**
      * The ID used to identify this component in Dash callbacks.
@@ -56,5 +55,10 @@ ToolboxItem.propTypes = {
     /**
      * The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID
      */
-    defaultName: PropTypes.string
+    defaultName: PropTypes.string,
+
+    /**
+     * Indicates that this item is in the toolbox and thus won't be rendered in the grid.
+     */
+    inToolbox: PropTypes.bool
 };

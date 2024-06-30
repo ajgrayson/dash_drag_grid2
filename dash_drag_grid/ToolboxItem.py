@@ -23,6 +23,10 @@ Keyword arguments:
 - h (number | dict; optional):
     The height on the of y axis (default is 4).
 
+- inToolbox (boolean; optional):
+    Indicates that this item is in the toolbox and thus won't be
+    rendered in the grid.
+
 - w (number | dict; optional):
     The width of the x axis (default is 6).
 
@@ -37,10 +41,10 @@ Keyword arguments:
     _namespace = 'dash_drag_grid'
     _type = 'ToolboxItem'
     @_explicitize_args
-    def __init__(self, children=None, id=Component.REQUIRED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, defaultName=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'defaultName', 'h', 'w', 'x', 'y']
+    def __init__(self, children=None, id=Component.REQUIRED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, defaultName=Component.UNDEFINED, inToolbox=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'w', 'x', 'y']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'defaultName', 'h', 'w', 'x', 'y']
+        self.available_properties = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'w', 'x', 'y']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

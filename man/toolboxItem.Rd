@@ -10,8 +10,8 @@ ToolboxItem is a wrapper that is intended to be used with ToolBoxGrid. ToolboxIt
 }
 
 \usage{
-toolboxItem(children=NULL, id=NULL, defaultName=NULL, h=NULL, w=NULL,
-x=NULL, y=NULL)
+toolboxItem(children=NULL, id=NULL, defaultName=NULL, h=NULL,
+inToolbox=NULL, w=NULL, x=NULL, y=NULL)
 }
 
 \arguments{
@@ -22,6 +22,8 @@ x=NULL, y=NULL)
 \item{defaultName}{Character. The name which will be displayed if the Item is in the toolbox. If non provided, then default is the ID}
 
 \item{h}{Numeric | named list. The height on the of y axis (default is 4)}
+
+\item{inToolbox}{Logical. Indicates that this item is in the toolbox and thus won't be rendered in the grid.}
 
 \item{w}{Numeric | named list. The width of the x axis (default is 6).}
 

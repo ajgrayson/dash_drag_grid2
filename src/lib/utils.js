@@ -1,5 +1,3 @@
-import { renderToString } from 'react-dom/server';
-
 export const filterLayoutForToolboxItems = (layoutDict) => {
     const toolboxLayout = {};
     const filteredLayout = {};
@@ -8,7 +6,7 @@ export const filterLayoutForToolboxItems = (layoutDict) => {
         const items = layoutDict[breakpoint];
         const toolboxItems = [];
         const filteredItems = items.filter((item) => {
-                        if (item.inToolbox) {
+            if (item.inToolbox) {
                 toolboxItems.push(item);
                 return false; // Exclude toolbox items from filtered layout
             }
@@ -41,7 +39,7 @@ export const categorizeContent = (children, layoutDict, currentBreakpoint) => {
 }
 
 export function appendInToolboxFalse(allLayouts) {
-        // Iterate over each breakpoint in all_layouts
+    // Iterate over each breakpoint in all_layouts
     for (const breakpoint in allLayouts) {
         // Get the layout for the current breakpoint
         const layout = allLayouts[breakpoint];
@@ -56,7 +54,7 @@ export function appendInToolboxFalse(allLayouts) {
 }
 
 export function defaultItemLayout(item_layout, id, key, ncols, nrows, max_cols, defaultInToolbox) {
-    
+
     const nb_items_x = Math.floor(max_cols / ncols);
     const col = key % nb_items_x;
     const row = Math.floor(key / nb_items_x);
@@ -73,7 +71,7 @@ export function defaultItemLayout(item_layout, id, key, ncols, nrows, max_cols, 
 
     // Merge with incoming item_layout, prioritizing values from item_layout
     let result = Object.assign({}, defaultChildLayout, item_layout);
-        return result;
+    return result;
 }
 
 export function normalizeToolboxItems(children) {
@@ -85,7 +83,6 @@ export function toolboxItemWrapper(child, key) {
 
     if (child.toolbox) return child;
 
-    
     let res = {
         id: child.props?.id,
         key: key,
@@ -95,7 +92,6 @@ export function toolboxItemWrapper(child, key) {
         toolbox: true
     };
 
-    
     // string
     if (typeof child === 'string') {
 
@@ -103,17 +99,17 @@ export function toolboxItemWrapper(child, key) {
         res.type = 'string';
 
     } else if (child.type == "ToolboxItem") {
-    
+
         res.element = child.props.children || child.props.id;
         res.props = child.props;
-    
-    // dash item
+
+        // dash item
     } else if (child.props?._dashprivate_layout) {
         res.id = child.props._dashprivate_layout.props.id;
         res.type = child.props._dashprivate_layout.type;
         res.element = child.props._dashprivate_layout.props.toolboxContent || child?.displayName || res.id
 
-    // classic react
+        // classic react
     } else {
         res.type = child.type.name;
     }
@@ -124,13 +120,11 @@ export function toolboxItemWrapper(child, key) {
         res.id = JSON.stringify(res.id);
     }
 
-    
     return res;
 }
 
 export function childWrapper(child, key) {
 
-    
     let res = {
         id: child.props?.id,
         key: key,
@@ -145,16 +139,16 @@ export function childWrapper(child, key) {
         res.id = child.toString();
         res.type = 'string';
 
-    // dash item
+        // dash item
     } else if (child.props?._dashprivate_layout) {
         res.id = child.props?._dashprivate_layout?.props.id;
         res.type = child.props._dashprivate_layout.type;
-    // classic react
+
+        // classic react
     } else {
         res.type = child.type.name;
     }
 
-    
     if (typeof res.id === 'undefined') {
         res.id = key.toString();
     } else if (typeof res.id === 'object') {
@@ -163,7 +157,6 @@ export function childWrapper(child, key) {
 
     res.isDashboardItem = res.type == "DashboardItemResponsive";
 
-    
     return res;
 }
 
@@ -183,8 +176,8 @@ export function distributeItems(items, layouts, breakpoint) {
     const gridItems = [];
     items.forEach((item) => {
         const isInLayout = layouts[breakpoint]?.some(itm => {
-                        return itm.i === item.id;
-        }); 
+            return itm.i === item.id;
+        });
         if (isInLayout) {
             gridItems.push(item);
         } else {
@@ -197,7 +190,7 @@ export function distributeItems(items, layouts, breakpoint) {
 export function generateToolboxItems(gridItems) {
     try {
         var results = gridItems.map(child => {
-                        let dashLayoutProps = child.node?.props?._dashprivate_layout?.props;
+            let dashLayoutProps = child.node?.props?._dashprivate_layout?.props;
             if (dashLayoutProps?.toolboxContent) {
                 return dashLayoutProps.toolboxContent;
             }
@@ -214,8 +207,7 @@ export function generateToolboxItems(gridItems) {
             return child.props.id;
         });
 
-        
         return results;
     } catch (e) {
-            }
+    }
 }
