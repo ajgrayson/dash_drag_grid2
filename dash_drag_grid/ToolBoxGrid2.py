@@ -49,6 +49,10 @@ Keyword arguments:
     This value sets if children, which do not have inToolbox defined,
     should be in the Toolbox by default.
 
+- deleteOnRemove (boolean; optional):
+    When an item is removed from the grid, delete it's underlying
+    element rather than just hiding it.
+
 - draggableCancel (string; default ''):
     (string) A CSS selector for tags that will not be draggable. or
     example: draggableCancel:'.MyNonDraggableAreaClassName' If you
@@ -58,6 +62,9 @@ Keyword arguments:
     A CSS selector for tags that will act as the draggable handle. For
     example: draggableHandle:'.MyDragHandleClassName' If you forget
     the leading . it will not work.
+
+- enableToolbox (boolean; default True):
+    When set to False no toolbox will be rendered.
 
 - gridCols (dict; optional):
     ({breakpoint: number}) the number of columns in the grid layout.
@@ -155,10 +162,10 @@ Keyword arguments:
     _namespace = 'dash_drag_grid'
     _type = 'ToolBoxGrid2'
     @_explicitize_args
-    def __init__(self, children=None, id=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, gridCols=Component.UNDEFINED, toolboxTitle=Component.UNDEFINED, toolboxComponent=Component.UNDEFINED, save=Component.UNDEFINED, clearSavedLayout=Component.UNDEFINED, ncols=Component.UNDEFINED, nrows=Component.UNDEFINED, height=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, autoSize=Component.UNDEFINED, draggableCancel=Component.UNDEFINED, draggableHandle=Component.UNDEFINED, verticalCompact=Component.UNDEFINED, compactType=Component.UNDEFINED, margin=Component.UNDEFINED, containerPadding=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, useCSSTransforms=Component.UNDEFINED, transformScale=Component.UNDEFINED, preventCollision=Component.UNDEFINED, isDroppable=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, toolbox=Component.UNDEFINED, currentBreakpoint=Component.UNDEFINED, onDropHeight=Component.UNDEFINED, onDropWidth=Component.UNDEFINED, defaultInToolbox=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'autoSize', 'breakpoints', 'className', 'clearSavedLayout', 'compactType', 'containerPadding', 'currentBreakpoint', 'defaultInToolbox', 'draggableCancel', 'draggableHandle', 'gridCols', 'height', 'isBounded', 'isDraggable', 'isDroppable', 'isResizable', 'layouts', 'margin', 'ncols', 'nrows', 'onDropHeight', 'onDropWidth', 'preventCollision', 'resizeHandles', 'save', 'style', 'toolbox', 'toolboxTitle', 'transformScale', 'useCSSTransforms', 'verticalCompact']
+    def __init__(self, children=None, id=Component.UNDEFINED, layouts=Component.UNDEFINED, breakpoints=Component.UNDEFINED, gridCols=Component.UNDEFINED, toolboxTitle=Component.UNDEFINED, toolboxComponent=Component.UNDEFINED, save=Component.UNDEFINED, clearSavedLayout=Component.UNDEFINED, ncols=Component.UNDEFINED, nrows=Component.UNDEFINED, height=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, autoSize=Component.UNDEFINED, draggableCancel=Component.UNDEFINED, draggableHandle=Component.UNDEFINED, verticalCompact=Component.UNDEFINED, compactType=Component.UNDEFINED, margin=Component.UNDEFINED, containerPadding=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, useCSSTransforms=Component.UNDEFINED, transformScale=Component.UNDEFINED, preventCollision=Component.UNDEFINED, isDroppable=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, toolbox=Component.UNDEFINED, currentBreakpoint=Component.UNDEFINED, onDropHeight=Component.UNDEFINED, onDropWidth=Component.UNDEFINED, defaultInToolbox=Component.UNDEFINED, enableToolbox=Component.UNDEFINED, deleteOnRemove=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'autoSize', 'breakpoints', 'className', 'clearSavedLayout', 'compactType', 'containerPadding', 'currentBreakpoint', 'defaultInToolbox', 'deleteOnRemove', 'draggableCancel', 'draggableHandle', 'enableToolbox', 'gridCols', 'height', 'isBounded', 'isDraggable', 'isDroppable', 'isResizable', 'layouts', 'margin', 'ncols', 'nrows', 'onDropHeight', 'onDropWidth', 'preventCollision', 'resizeHandles', 'save', 'style', 'toolbox', 'toolboxTitle', 'transformScale', 'useCSSTransforms', 'verticalCompact']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'autoSize', 'breakpoints', 'className', 'clearSavedLayout', 'compactType', 'containerPadding', 'currentBreakpoint', 'defaultInToolbox', 'draggableCancel', 'draggableHandle', 'gridCols', 'height', 'isBounded', 'isDraggable', 'isDroppable', 'isResizable', 'layouts', 'margin', 'ncols', 'nrows', 'onDropHeight', 'onDropWidth', 'preventCollision', 'resizeHandles', 'save', 'style', 'toolbox', 'toolboxTitle', 'transformScale', 'useCSSTransforms', 'verticalCompact']
+        self.available_properties = ['children', 'id', 'autoSize', 'breakpoints', 'className', 'clearSavedLayout', 'compactType', 'containerPadding', 'currentBreakpoint', 'defaultInToolbox', 'deleteOnRemove', 'draggableCancel', 'draggableHandle', 'enableToolbox', 'gridCols', 'height', 'isBounded', 'isDraggable', 'isDroppable', 'isResizable', 'layouts', 'margin', 'ncols', 'nrows', 'onDropHeight', 'onDropWidth', 'preventCollision', 'resizeHandles', 'save', 'style', 'toolbox', 'toolboxTitle', 'transformScale', 'useCSSTransforms', 'verticalCompact']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

@@ -11,7 +11,7 @@
 
 \usage{
 toolBox2(breakpoints=NULL, component=NULL, items=NULL, layouts=NULL,
-title=NULL)
+linkedId=NULL, title=NULL)
 }
 
 \arguments{
@@ -22,6 +22,8 @@ title=NULL)
 \item{items}{Unnamed list. }
 
 \item{layouts}{Named list. }
+
+\item{linkedId}{Character. }
 
 \item{title}{Character. }
 }

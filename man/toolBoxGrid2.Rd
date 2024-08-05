@@ -13,8 +13,9 @@
 toolBoxGrid2(children=NULL, id=NULL, autoSize=NULL, breakpoints=NULL,
 className=NULL, clearSavedLayout=NULL, compactType=NULL,
 containerPadding=NULL, currentBreakpoint=NULL,
-defaultInToolbox=NULL, draggableCancel=NULL,
-draggableHandle=NULL, gridCols=NULL, height=NULL,
+defaultInToolbox=NULL, deleteOnRemove=NULL,
+draggableCancel=NULL, draggableHandle=NULL,
+enableToolbox=NULL, gridCols=NULL, height=NULL,
 isBounded=NULL, isDraggable=NULL, isDroppable=NULL,
 isResizable=NULL, layouts=NULL, margin=NULL, ncols=NULL,
 nrows=NULL, onDropHeight=NULL, onDropWidth=NULL,
@@ -53,6 +54,8 @@ will be cleared on the next page load.}
 
 \item{defaultInToolbox}{Logical. This value sets if children, which do not have inToolbox defined, should be in the Toolbox by default}
 
+\item{deleteOnRemove}{Logical. When an item is removed from the grid, delete it's underlying element rather than just hiding it}
+
 \item{draggableCancel}{Character. (string) A CSS selector for tags that will not be draggable.
 or example: draggableCancel:'.MyNonDraggableAreaClassName'
 If you forget the leading . it will not work.}
@@ -60,6 +63,8 @@ If you forget the leading . it will not work.}
 \item{draggableHandle}{Character. A CSS selector for tags that will act as the draggable handle.
 For example: draggableHandle:'.MyDragHandleClassName'
 If you forget the leading . it will not work.}
+
+\item{enableToolbox}{Logical. When set to false no toolbox will be rendered}
 
 \item{gridCols}{Named list. ({breakpoint: number}) the number of columns in the grid layout.
 Default value is {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}.}
