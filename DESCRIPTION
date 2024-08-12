@@ -1,6 +1,6 @@
 Package: dashDragGrid
 Title: Draggable Toolbox grid based on react grid
-Version: __VERSION__
+Version: 0.99
 Description: Draggable Toolbox grid based on react grid
 Depends: R (>= 3.0.2)
 Imports: 

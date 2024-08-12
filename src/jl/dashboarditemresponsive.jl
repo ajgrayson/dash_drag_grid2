@@ -21,6 +21,7 @@ Keyword arguments:
 - `isDashboardItem` (Bool; optional): This is an internal prop used to identify the component, this property default value is True.
 Setting this value to false is equivalent to not using the DashboardItem wrapper.
 - `isDraggable` (Bool; optional): If false, will not be draggable. Overrides `static`.
+- `isRemoveable` (Bool; optional): If false, will not be removeable.
 - `isResizable` (Bool; optional): If false, will not be resizable. Overrides `static`.
 - `maxH` (Real; optional): Set the max height
 - `maxW` (Real; optional): Set the max width
@@ -35,7 +36,7 @@ Setting this value to false is equivalent to not using the DashboardItem wrapper
 - `y` (Real | Dict; optional): The position on the y axis (the unit is 30px, by default)
 """
 function dashboarditemresponsive(; kwargs...)
-        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :toolboxContent, :w, :x, :y]
+        available_props = Symbol[:children, :id, :defaultName, :h, :inToolbox, :isBounded, :isDashboardItem, :isDraggable, :isRemoveable, :isResizable, :maxH, :maxW, :minH, :minW, :moved, :resizeHandles, :static, :toolboxContent, :w, :x, :y]
         wild_props = Symbol[]
         return Component("dashboarditemresponsive", "DashboardItemResponsive", "dash_drag_grid", available_props, wild_props; kwargs...)
 end

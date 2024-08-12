@@ -52,12 +52,14 @@ class GridItem extends Component {
                         onMouseDown={() => this.activate()}
                         onMouseUp={() => this.deactivate()}
                     >...</div>
-                    <button
-                        className="close-button"
-                        onClick={() => props.onCloseClicked && props.onCloseClicked()}
-                    >
-                        &times;
-                    </button>
+                    {props.isRemoveable && (
+                        <button
+                            className="close-button"
+                            onClick={() => props.onCloseClicked && props.onCloseClicked()}
+                        >
+                            &times;
+                        </button>
+                    )}
                 </div>
 
                 <div

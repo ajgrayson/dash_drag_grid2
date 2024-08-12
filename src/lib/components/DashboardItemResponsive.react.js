@@ -25,6 +25,7 @@ DashboardItemResponsive.defaultProps = {
     h: NROWS,
     isDashboardItem: true,
     inToolbox: false,
+    isRemoveable:  false,
 };
 
 DashboardItemResponsive.propTypes = {
@@ -74,6 +75,11 @@ DashboardItemResponsive.propTypes = {
      * If false, will not be resizable. Overrides `static`.
      */
     isResizable: PropTypes.bool,
+
+    /**
+     * If false, will not be removeable.
+     */
+    isRemoveable: PropTypes.bool,
 
     /**
     Is is bounded

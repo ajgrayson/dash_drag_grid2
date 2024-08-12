@@ -12,9 +12,10 @@ DashboardItemResponsive is a wrapper that is intended to be used with Responsive
 \usage{
 dashboardItemResponsive(children=NULL, id=NULL, defaultName=NULL, h=NULL,
 inToolbox=NULL, isBounded=NULL, isDashboardItem=NULL,
-isDraggable=NULL, isResizable=NULL, maxH=NULL, maxW=NULL,
-minH=NULL, minW=NULL, moved=NULL, resizeHandles=NULL,
-static=NULL, toolboxContent=NULL, w=NULL, x=NULL, y=NULL)
+isDraggable=NULL, isRemoveable=NULL, isResizable=NULL,
+maxH=NULL, maxW=NULL, minH=NULL, minW=NULL, moved=NULL,
+resizeHandles=NULL, static=NULL, toolboxContent=NULL,
+w=NULL, x=NULL, y=NULL)
 }
 
 \arguments{
@@ -34,6 +35,8 @@ static=NULL, toolboxContent=NULL, w=NULL, x=NULL, y=NULL)
 Setting this value to false is equivalent to not using the DashboardItem wrapper.}
 
 \item{isDraggable}{Logical. If false, will not be draggable. Overrides `static`.}
+
+\item{isRemoveable}{Logical. If false, will not be removeable.}
 
 \item{isResizable}{Logical. If false, will not be resizable. Overrides `static`.}
 

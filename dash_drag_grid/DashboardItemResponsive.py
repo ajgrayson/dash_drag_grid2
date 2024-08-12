@@ -38,6 +38,9 @@ Keyword arguments:
 - isDraggable (boolean; optional):
     If False, will not be draggable. Overrides `static`.
 
+- isRemoveable (boolean; default False):
+    If False, will not be removeable.
+
 - isResizable (boolean; optional):
     If False, will not be resizable. Overrides `static`.
 
@@ -78,10 +81,10 @@ Keyword arguments:
     _namespace = 'dash_drag_grid'
     _type = 'DashboardItemResponsive'
     @_explicitize_args
-    def __init__(self, children=None, id=Component.UNDEFINED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, static=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isBounded=Component.UNDEFINED, maxH=Component.UNDEFINED, maxW=Component.UNDEFINED, minH=Component.UNDEFINED, minW=Component.UNDEFINED, moved=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, isDashboardItem=Component.UNDEFINED, inToolbox=Component.UNDEFINED, defaultName=Component.UNDEFINED, toolboxContent=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'toolboxContent', 'w', 'x', 'y']
+    def __init__(self, children=None, id=Component.UNDEFINED, x=Component.UNDEFINED, y=Component.UNDEFINED, w=Component.UNDEFINED, h=Component.UNDEFINED, static=Component.UNDEFINED, isDraggable=Component.UNDEFINED, isResizable=Component.UNDEFINED, isRemoveable=Component.UNDEFINED, isBounded=Component.UNDEFINED, maxH=Component.UNDEFINED, maxW=Component.UNDEFINED, minH=Component.UNDEFINED, minW=Component.UNDEFINED, moved=Component.UNDEFINED, resizeHandles=Component.UNDEFINED, isDashboardItem=Component.UNDEFINED, inToolbox=Component.UNDEFINED, defaultName=Component.UNDEFINED, toolboxContent=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isRemoveable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'toolboxContent', 'w', 'x', 'y']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'toolboxContent', 'w', 'x', 'y']
+        self.available_properties = ['children', 'id', 'defaultName', 'h', 'inToolbox', 'isBounded', 'isDashboardItem', 'isDraggable', 'isRemoveable', 'isResizable', 'maxH', 'maxW', 'minH', 'minW', 'moved', 'resizeHandles', 'static', 'toolboxContent', 'w', 'x', 'y']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

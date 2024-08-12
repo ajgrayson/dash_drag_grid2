@@ -134,6 +134,17 @@
         "required": false,
         "description": "If false, will not be resizable. Overrides `static`."
       },
+      "isRemoveable": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If false, will not be removeable.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "isBounded": {
         "type": {
           "name": "bool"
