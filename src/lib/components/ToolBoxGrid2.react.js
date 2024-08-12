@@ -381,6 +381,7 @@ const ToolBoxGrid2 = (props) => {
                         canClose={true}
                         onCloseClicked={handleCloseItemClicked(item.id)}
                         active={activeWindows[item.key] || false}
+                        isRemoveable={item.props.isRemoveable}
                     >{item.element}</GridItem>
                 );
             })}
