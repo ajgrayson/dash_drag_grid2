@@ -1,6 +1,6 @@
 {
   "name": "dash_drag_grid",
-  "version": "__VERSION__",
+  "version": "0.99",
   "description": "Draggable Toolbox grid based on react grid",
   "repository": {
     "type": "git",
