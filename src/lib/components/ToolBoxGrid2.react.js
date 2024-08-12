@@ -372,7 +372,7 @@ const ToolBoxGrid2 = (props) => {
                 } = layout;
 
                 const pos = { x: x, y: y, w: w, h: h, i: i };
-
+                console.log(item);
                 return (
                     <GridItem
                         key={item.id}
