@@ -35,7 +35,6 @@ class GridItem extends Component {
         if (this.state.active || this.props.active) {
             activeClass = "active";
         }
-        console.log(props.isRemoveable)
         return (
             <div
                 key={props.key}
@@ -74,7 +73,6 @@ class GridItem extends Component {
 }
 
 export default React.forwardRef((props, ref) => {
-    console.log(props)
     return (
         <GridItem
             innerRef={ref} {...props}
