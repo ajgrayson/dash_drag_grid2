@@ -13,7 +13,7 @@ import './style.css';
  */
 export default class DashboardItemResponsive extends React.Component {
     render() {
-        const {children, inToolbox, defaultName} = this.props;
+        const {children, inToolbox, defaultName, isRemoveable} = this.props;
         return children;
     }
 }
