@@ -4,7 +4,7 @@ class GridItem extends Component {
 
     constructor(props) {
         super(props)
-
+        console.log(props)
         this.state = {
             active: false
         }
@@ -31,6 +31,7 @@ class GridItem extends Component {
 
     render() {
         const props = this.props;
+        console.log(props);
         let activeClass = "";
         if (this.state.active || this.props.active) {
             activeClass = "active";
