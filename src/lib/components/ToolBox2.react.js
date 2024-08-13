@@ -211,7 +211,8 @@ ToolBox.propTypes = {
     title: PropTypes.string,
     component: PropTypes.func,
     layouts: PropTypes.object,
-    breakpoints: PropTypes.object
+    breakpoints: PropTypes.object,
+    setProps: PropTypes.func
 };
 
 ToolBox.defaultProps = {
