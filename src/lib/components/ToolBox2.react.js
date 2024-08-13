@@ -206,6 +206,7 @@ function ToolBox(props) {
 };
 
 ToolBox.propTypes = {
+    id: PropTypes.string,
     linkedId: PropTypes.string,
     items: PropTypes.array.isRequired,
     title: PropTypes.string,
